@@ -1,0 +1,90 @@
+<header class="doc">
+  <p class="kind">Procédure · SRV-GITEA</p>
+  <h1>Installer Gitea sous Docker</h1>
+  <p class="meta">Gitea et PostgreSQL dans un fichier Compose, port SSH décalé, installation web.</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Héberger en interne un serveur Git (alternative à GitHub) pour versionner les configurations des switchs
+  et le fichier Compose du serveur Docker.</dd>
+  <dt>Ports</dt><dd>Web <code>3000</code>, SSH Gitea <code>222</code> (décalé pour laisser le 22 au SSH du serveur).</dd>
+</dl>
+
+<h2>1. Prérequis</h2>
+<p>Un serveur Ubuntu Server avec Docker installé depuis le dépôt officiel (voir « Installer le serveur Docker et Portainer », étapes 1 et 2).</p>
+
+<h2>2. Préparer le dossier</h2>
+<pre><code>sudo mkdir -p /opt/gitea
+cd /opt/gitea
+sudo nano docker-compose.yml</code></pre>
+
+<h2>3. Fichier Compose</h2>
+<pre><code>services:
+  server:
+    image: gitea/gitea:latest
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=${GITEA_DB_PASSWORD}
+    restart: always
+    networks: [gitea_net]
+    volumes:
+      - gitea_data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"   # web
+      - "222:22"      # SSH de Gitea, distinct du SSH du serveur
+    depends_on: [db]
+
+  db:
+    image: postgres:15-alpine
+    container_name: gitea_db
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=${GITEA_DB_PASSWORD}   # le même que ci-dessus
+      - POSTGRES_DB=gitea
+    networks: [gitea_net]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  gitea_net:
+    name: gitea_net
+
+volumes:
+  gitea_data:
+  postgres_data:</code></pre>
+<p>Le mot de passe de la base est placé dans un fichier <code>.env</code> à côté du Compose (lisible par root seulement),
+et pas en clair dans le fichier :</p>
+<pre><code>echo 'GITEA_DB_PASSWORD=&lt;mot de passe long et aléatoire&gt;' | sudo tee /opt/gitea/.env
+sudo chmod 600 /opt/gitea/.env</code></pre>
+
+<h2>4. Lancer et installer</h2>
+<pre><code>sudo docker compose up -d
+sudo docker ps      # gitea et gitea_db doivent être « Up »</code></pre>
+<p>Ouvrir <code>http://&lt;IP_SRV_GITEA&gt;:3000</code>. La page de configuration initiale s'affiche :</p>
+<ul>
+  <li><strong>Base de données</strong> : laisser les valeurs, elles viennent du fichier Compose.</li>
+  <li><strong>Titre du site</strong> : par exemple « Serveur Git réseau ».</li>
+  <li><strong>Port du serveur SSH</strong> : <code>222</code>. Sinon les URL de clonage SSH affichées par Gitea seront fausses.</li>
+  <li><strong>URL de base</strong> : <code>http://&lt;IP_SRV_GITEA&gt;:3000/</code>.</li>
+  <li><strong>Compte administrateur</strong> (en bas de page) : le créer maintenant et ranger le mot de passe dans le KeePass.</li>
+</ul>
+<p>Cliquer sur <em>Installer Gitea</em>.</p>
+
+<h2>5. Vérifier</h2>
+<pre><code># depuis un poste d'administration
+git clone ssh://git@&lt;IP_SRV_GITEA&gt;:222/&lt;compte&gt;/&lt;depot&gt;.git</code></pre>
+
+<h2>Suite</h2>
+<ul>
+  <li>« Relier Gitea et Portainer » pour le fichier Compose du serveur Docker.</li>
+  <li>« Installer Semaphore et Ansible sous Docker » pour la sauvegarde des switchs.</li>
+</ul>

@@ -1,0 +1,47 @@
+<header class="doc">
+  <p class="kind">Guide d'utilisation · sauvegarde des switchs</p>
+  <h1>Sauvegarde des switchs : guide d'utilisation</h1>
+  <p class="meta">Où trouver les sauvegardes, ajouter ou retirer un switch, lancer la tâche à la main.</p>
+</header>
+
+<p>La configuration de chaque switch est sauvegardée automatiquement toutes les nuits à 2 h.
+Ce guide s'adresse aux techniciens qui ont besoin de retrouver une configuration ou de modifier la liste des switchs.</p>
+
+<h2>1. Retrouver une sauvegarde</h2>
+<ol>
+  <li>Ouvrir Gitea, dépôt <code>backups-switchs-ansible</code>.</li>
+  <li>Dossier <code>backups/&lt;site&gt;/</code> : un fichier <code>&lt;nom-du-switch&gt;.cfg</code> par switch, toujours la dernière version.</li>
+  <li>Pour une version plus ancienne : ouvrir le fichier puis <em>Historique</em>. Chaque ligne est une nuit où la configuration a changé.</li>
+  <li>Cliquer sur un commit affiche les lignes ajoutées (vert) et retirées (rouge) : c'est le moyen le plus rapide de savoir ce qui a été modifié sur un switch.</li>
+</ol>
+<div class="note"><p>Pas de commit pendant plusieurs jours ? C'est normal : un commit n'est créé que si au moins une configuration a changé.</p></div>
+
+<h2>2. Ajouter ou retirer un switch</h2>
+<p>La liste des switchs est le fichier <code>hosts.ini</code> du même dépôt, rangé par site :</p>
+<pre><code>[Site_C]
+SWI-EXEMPLE-01 ansible_host=&lt;IP_DU_SWITCH&gt;
+SWI-EXEMPLE-02 ansible_host=&lt;IP_DU_SWITCH&gt; ansible_network_os=ios   # switch Cisco
+
+[Site_C:vars]
+nom_site=Site_C</code></pre>
+<ul>
+  <li><strong>Ajouter</strong> : une ligne sous le bon site. Pour un Cisco, ajouter <code>ansible_network_os=ios</code> (par défaut : Aruba).</li>
+  <li><strong>Retirer</strong> : supprimer la ligne, ou la commenter avec <code>#</code> en indiquant pourquoi (« administrable seulement en web », « ne répond pas »).</li>
+  <li>Enregistrer avec un message de commit clair. La prochaine exécution prend la nouvelle liste.</li>
+</ul>
+
+<h2>3. Le playbook</h2>
+<p>Le fichier <code>backup_switch.yml</code> contient les commandes envoyées aux switchs.
+On n'y touche que pour changer ce qui est sauvegardé (par défaut <code>show running-config</code>).</p>
+
+<h2>4. Lancer une sauvegarde à la main</h2>
+<p>Utile juste après une intervention sur un switch, pour figer la nouvelle configuration.</p>
+<ol>
+  <li>Ouvrir Semaphore (lien dans le tableau de bord Homarr du serveur Docker). Identifiants : KeePass du service.</li>
+  <li>Projet de sauvegarde → <em>Task Templates</em> → bouton <em>Run</em> sur la tâche de sauvegarde.</li>
+  <li>Suivre la sortie en direct. En fin d'exécution : <code>ok</code> = rien n'a changé, <code>changed</code> = nouvelle version enregistrée.</li>
+</ol>
+
+<h2>5. Vérifier que tout tourne</h2>
+<p>Dans Semaphore, menu <em>History</em> : une exécution par nuit, en vert. Une exécution en rouge indique au moins un switch en échec ;
+la sortie donne son nom et l'erreur (le plus souvent un switch éteint ou un mot de passe changé).</p>

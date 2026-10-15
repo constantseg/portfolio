@@ -1,0 +1,205 @@
+<header class="doc">
+  <p class="kind"><span class="id">CS-01</span>TP · BTS SIO 2e année · Réseau</p>
+  <h1>Mettre en place un reverse proxy Nginx</h1>
+  <p class="meta">Debian 13, certificat de l'autorité interne, routage par chemin, par nom de domaine, et répartition de charge vers deux serveurs Apache.</p>
+  <dl class="card">
+    <div><dt>Auteur</dt><dd>Constant Segrétain</dd></div>
+    <div><dt>Contexte</dt><dd>TP B2.1 / B2.2 · conception d'infrastructure réseau</dd></div>
+    <div><dt>Date</dt><dd>septembre 2026</dd></div>
+  </dl>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Publier plusieurs applications web derrière un point d'entrée unique en HTTPS :
+  un seul serveur exposé, un seul certificat à gérer, une seule règle de pare-feu.</dd>
+  <dt>Bloc</dt><dd>B2.1 / B2.2 — concevoir, installer et tester une solution d'infrastructure réseau.</dd>
+  <dt>Prérequis</dt><dd>Une autorité de certification interne (AD CS ou autre), un serveur DNS, trois machines Debian.</dd>
+</dl>
+
+<h2>1. Principe</h2>
+<p>Le reverse proxy reçoit toutes les requêtes des clients et les relaie au bon serveur interne.
+Le client ne voit que le proxy : il ne connaît ni l'adresse ni le nombre des serveurs derrière.</p>
+<table>
+  <tr><th>Fonction</th><th>Ce qu'elle apporte</th></tr>
+  <tr><td>Terminaison TLS</td><td>Le proxy porte le certificat et déchiffre le HTTPS ; les serveurs internes peuvent rester en HTTP.</td></tr>
+  <tr><td>Routage</td><td>Par chemin (<code>/web01</code>) ou par nom de domaine (<code>web01.…</code>).</td></tr>
+  <tr><td>Répartition de charge</td><td>Round-robin (défaut), <code>least_conn</code>, <code>ip_hash</code>.</td></tr>
+  <tr><td>Masquage</td><td>Adresses et architecture internes invisibles depuis l'extérieur.</td></tr>
+  <tr><td>Cache, compression</td><td>Moins de charge sur les serveurs, pages plus rapides.</td></tr>
+</table>
+
+<h3>Maquette</h3>
+<table>
+  <tr><th>Machine</th><th>Rôle</th><th>Nom DNS</th></tr>
+  <tr><td>RP</td><td>Nginx, reverse proxy</td><td><code>rp.sio.local</code></td></tr>
+  <tr><td>WEB01</td><td>Apache, page « Server 1 » (fond bleu)</td><td><code>srv-web01.sio.local</code></td></tr>
+  <tr><td>WEB02</td><td>Apache, page « Server 2 » (fond rouge)</td><td><code>srv-web02.sio.local</code></td></tr>
+</table>
+<p>Les serveurs web peuvent être des VM ou des conteneurs LXC Debian 13 sous Proxmox.</p>
+
+<h2>2. Installer les deux serveurs Apache</h2>
+<p>Sur WEB01 et WEB02 :</p>
+<pre><code>apt update &amp;&amp; apt install -y apache2 unzip
+cd /var/www/html
+unzip /root/tp-contenu.zip           # index1.html et index2.html
+mv index1.html index.html            # sur WEB01  (index2.html sur WEB02)
+systemctl enable --now apache2</code></pre>
+<p>Vérifier depuis le proxy : <code>curl http://srv-web01.sio.local</code> renvoie « Server 1 », et WEB02 « Server 2 ».</p>
+
+<h2>3. Installer Nginx</h2>
+<pre><code>apt update &amp;&amp; apt install -y nginx
+systemctl enable --now nginx</code></pre>
+<p>Depuis un poste client, ouvrir <code>http://rp.sio.local</code> : la page par défaut s'affiche.</p>
+<figure><img src="img/rp-welcome.png" alt="Page par défaut de Nginx">
+<figcaption>Page d'accueil par défaut de Nginx après installation.</figcaption></figure>
+
+<p>La configuration est lue dans <code>/etc/nginx/nginx.conf</code>, puis dans <code>conf.d/*</code> et <code>sites-enabled/*</code>.
+Comme dans le cours, on garde une copie de l'original et on écrit toute la configuration dans <code>nginx.conf</code> :</p>
+<pre><code>cp /etc/nginx/nginx.conf /etc/nginx/nginx.bck
+rm /etc/nginx/sites-enabled/default</code></pre>
+
+<h2>4. Certificat du proxy</h2>
+<p>Un seul certificat couvre tous les noms publiés par le proxy grâce aux noms alternatifs (SAN).
+Le joker <code>*.rp.sio.local</code> couvre <code>web01</code>, <code>web02</code> et <code>web</code>.</p>
+<pre><code>mkdir -p /etc/ssl/certs/rp /etc/ssl/private/rp
+cd /etc/ssl/private/rp
+openssl req -new -newkey rsa:2048 -nodes -keyout rp.key -out rp.csr \
+  -subj "/CN=rp.sio.local" \
+  -addext "subjectAltName=DNS:rp.sio.local,DNS:*.rp.sio.local"
+chmod 600 rp.key</code></pre>
+<ol>
+  <li>Faire signer <code>rp.csr</code> par l'autorité interne (AD CS : <code>https://&lt;serveur-ca&gt;/certsrv</code> →
+  <em>Demander un certificat</em> → <em>demande avancée</em> → coller le CSR → modèle <strong>Serveur Web</strong>).</li>
+  <li>Télécharger le certificat en <strong>Base 64</strong>, le copier en <code>/etc/ssl/certs/rp/rp.crt</code>.</li>
+  <li>Vérifier les noms : <code>openssl x509 -in /etc/ssl/certs/rp/rp.crt -noout -ext subjectAltName</code>.</li>
+</ol>
+<div class="note"><p>Les postes clients doivent faire confiance à l'autorité (certificat racine déployé par GPO dans un domaine AD),
+sinon le navigateur affichera une alerte.</p></div>
+
+<h2>5. Enregistrements DNS</h2>
+<p>Tous les noms publiés doivent pointer vers le <strong>proxy</strong>, pas vers les serveurs web. Sur le DNS Windows :</p>
+<pre><code>Add-DnsServerResourceRecordA -ZoneName sio.local -Name rp -IPv4Address 192.168.10.20
+foreach ($n in "web01.rp","web02.rp","web.rp") {
+    Add-DnsServerResourceRecordCName -ZoneName sio.local -Name $n -HostNameAlias rp.sio.local
+}</code></pre>
+
+<h2>6. Configurer Nginx</h2>
+<p>Les quatre exercices du TP tiennent dans un seul fichier <code>/etc/nginx/nginx.conf</code>.
+Directives utiles : <code>server</code> (site virtuel), <code>server_name</code> (nom auquel il répond),
+<code>location</code> (traitement d'une URL), <code>proxy_pass</code> (serveur à qui remettre la requête),
+<code>proxy_set_header</code> (en-têtes transmis), <code>upstream</code> (groupe de serveurs).</p>
+
+<h3>En-tête du fichier</h3>
+<pre><code>user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+error_log /var/log/nginx/error.log;
+include /etc/nginx/modules-enabled/*.conf;
+
+events { worker_connections 768; }
+
+http {
+    include       /etc/nginx/mime.types;
+    access_log    /var/log/nginx/access.log;
+
+    # en-têtes transmis aux serveurs internes
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # certificat commun à tous les sites
+    ssl_certificate     /etc/ssl/certs/rp/rp.crt;
+    ssl_certificate_key /etc/ssl/private/rp/rp.key;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+
+    # redirection HTTP → HTTPS
+    server {
+        listen 80 default_server;
+        return 301 https://$host$request_uri;
+    }
+
+    # ... blocs des exercices a) à d) ci-dessous ...
+}</code></pre>
+
+<h3>a) Site simple et b) routage par chemin</h3>
+<figure><img src="img/rp-schema-chemin.png" alt="Schéma routage par chemin">
+<figcaption>Routage par chemin : une seule adresse, un chemin par application (schéma du cours).</figcaption></figure>
+<pre><code>    server {
+        listen      443 ssl;
+        server_name rp.sio.local;
+
+        location / {                         # a) page servie par Nginx lui-même
+            root  /usr/share/nginx/html;
+            index index.html index.htm;
+        }
+        location /web01/ {                   # b) https://rp.sio.local/web01/
+            proxy_pass http://srv-web01.sio.local/;
+        }
+        location /web02/ {
+            proxy_pass http://srv-web02.sio.local/;
+        }
+    }</code></pre>
+<div class="warn"><p>Le <code>/</code> final de <code>proxy_pass</code> compte : il remplace le préfixe <code>/web01/</code> par <code>/</code>.
+Sans lui, Apache recevrait <code>/web01/</code> et répondrait 404.</p></div>
+
+<h3>c) Routage par nom de domaine</h3>
+<figure><img src="img/rp-schema-domaine.png" alt="Schéma routage par nom de domaine">
+<figcaption>Routage par nom : un bloc <code>server</code> par nom publié (schéma du cours).</figcaption></figure>
+<pre><code>    server {
+        listen      443 ssl;
+        server_name web01.rp.sio.local;
+        location / { proxy_pass http://srv-web01.sio.local/; }
+    }
+    server {
+        listen      443 ssl;
+        server_name web02.rp.sio.local;
+        location / { proxy_pass http://srv-web02.sio.local/; }
+    }</code></pre>
+
+<h3>d) Répartition de charge</h3>
+<figure><img src="img/rp-schema-charge.png" alt="Schéma répartition de charge">
+<figcaption>Répartition de charge : une seule URL, plusieurs serveurs (schéma du cours).</figcaption></figure>
+<pre><code>    upstream ferme_web {
+        # least_conn;                        # décommenter : serveur le moins chargé
+        server srv-web01.sio.local:80;
+        server srv-web02.sio.local:80;
+    }
+    server {
+        listen      443 ssl;
+        server_name web.rp.sio.local;
+        location / { proxy_pass http://ferme_web/; }
+    }</code></pre>
+
+<h2>7. Appliquer et vérifier</h2>
+<pre><code>nginx -t                       # contrôle de syntaxe, toujours avant le redémarrage
+systemctl restart nginx</code></pre>
+<figure><img src="img/rp-nginx-t.png" alt="Sortie de nginx -t">
+<figcaption>Syntaxe valide : Nginx peut être redémarré. Capture : Sokote zaman, Wikimedia Commons, CC BY-SA 4.0.</figcaption></figure>
+
+<table>
+  <tr><th>Test</th><th>Résultat attendu</th></tr>
+  <tr><td><code>https://rp.sio.local</code></td><td>Page Nginx, cadenas valide.</td></tr>
+  <tr><td><code>http://rp.sio.local</code></td><td>Redirigé en HTTPS.</td></tr>
+  <tr><td><code>https://rp.sio.local/web01/</code></td><td>« Server 1 » sur fond bleu.</td></tr>
+  <tr><td><code>https://rp.sio.local/web02/</code></td><td>« Server 2 » sur fond rouge.</td></tr>
+  <tr><td><code>https://web01.rp.sio.local</code></td><td>« Server 1 ».</td></tr>
+  <tr><td><code>https://web02.rp.sio.local</code></td><td>« Server 2 ».</td></tr>
+  <tr><td><code>https://web.rp.sio.local</code> puis F5</td><td>Alternance « Server 1 » / « Server 2 », l'URL ne change pas.</td></tr>
+</table>
+<p>En ligne de commande depuis un client :</p>
+<pre><code>for i in 1 2 3 4; do curl -s --cacert ca.crt https://web.rp.sio.local | grep -o 'Server [12]'; done</code></pre>
+<p>Côté Apache, <code>tail /var/log/apache2/access.log</code> montre que toutes les requêtes viennent de l'IP du proxy.</p>
+
+<h2>8. Dépannage</h2>
+<table>
+  <tr><th>Symptôme</th><th>Piste</th></tr>
+  <tr><td>502 Bad Gateway</td><td>Le serveur interne ne répond pas : <code>curl http://srv-web01.sio.local</code> depuis le proxy, Apache démarré ?</td></tr>
+  <tr><td>404 sur <code>/web01</code></td><td><code>/</code> final oublié sur <code>proxy_pass</code>, ou appel de <code>/web01</code> sans <code>/</code> final.</td></tr>
+  <tr><td>Mauvais site affiché</td><td>Le nom ne pointe pas vers le proxy, ou <code>server_name</code> mal écrit : Nginx sert le premier bloc.</td></tr>
+  <tr><td>Alerte de certificat</td><td>Nom absent du SAN, ou autorité non approuvée par le poste.</td></tr>
+  <tr><td>Nginx ne redémarre pas</td><td><code>nginx -t</code>, puis <code>journalctl -u nginx</code> et <code>/var/log/nginx/error.log</code>.</td></tr>
+</table>
+
+<p class="sources">Schémas : support de cours BTS SIO (domaine d'exemple nico.local). Capture <code>nginx -t</code> : Wikimedia Commons (CC BY-SA 4.0).
+Référence : documentation Nginx, module <code>ngx_http_proxy_module</code> et <code>ngx_http_upstream_module</code>.</p>

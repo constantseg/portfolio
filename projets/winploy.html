@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WinPloy · Constant Segrétain</title>
+<meta name="description" content="Installer une application sur un lot de postes Windows, maintenant, depuis un poste d'administration.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="../index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="../index.html">Accueil</a>
+      <a href="../projets.html" aria-current="page">Projets</a>
+      <a href="../competences.html">Compétences</a>
+      <a href="../documentation.html">Documentation</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <p class="crumb"><a href="../projets.html">Projets</a> / WinPloy</p>
+  <header class="project-head">
+    <h1>WinPloy</h1>
+    <p class="tagline">Installer une application sur un lot de postes Windows, maintenant, depuis un poste d'administration.</p>
+  </header>
+  <dl class="factsheet">
+    <div><dt>Type</dt><dd>Projet personnel</dd></div>
+    <div><dt>Stack</dt><dd>C# · .NET 8 · WPF</dd></div>
+    <div><dt>Statut</dt><dd><span class="status">Version 2.0</span></dd></div>
+    <div><dt>Code</dt><dd><a href="https://github.com/constantseg/WinPloy">GitHub</a></dd></div>
+  </dl>
+  <figure class="shot">
+    <img src="../img/winploy.png" alt="Interface de WinPloy : postes, applications et déploiement en trois volets, suivi en bas">
+    <figcaption>Les trois étapes de gauche à droite : choisir les postes, choisir les applications, lancer. Le suivi s'affiche en bas.</figcaption>
+  </figure>
+  <div class="prose">
+<h2>Le besoin</h2>
+<p>
+  « Installer cette application sur ces douze postes, maintenant. » Intune, SCCM ou WAPT savent le faire,
+  mais les mobiliser pour ça est disproportionné, quand on les a. Je voulais un outil qu'on décompresse,
+  qu'on lance, et qui fait juste ça.
+</p>
+
+<h2>Ce que fait WinPloy</h2>
+<ul>
+  <li>Recherche des postes dans l'Active Directory, sans RSAT.</li>
+  <li>Catalogue partagé entre administrateurs : applications WinGet, ou paquets maison (<code>.msi</code>, <code>.ps1</code>, <code>.bat</code>, <code>.exe</code>) posés sur un partage.</li>
+  <li>Une session WinRM par poste, de 1 à 200 postes en parallèle, sans bloquer l'interface.</li>
+  <li>Suivi poste par poste et paquet par paquet, arrêt en cours, relance des seuls échecs, export CSV.</li>
+  <li>Interface en français et en anglais.</li>
+</ul>
+<p>
+  Rien n'est installé sur les postes cibles et aucun serveur n'est nécessaire. Ce n'est pas un outil de
+  gestion de parc : pas d'inventaire, pas de conformité, pas de planification. C'est voulu.
+</p>
+
+<h2>Les problèmes intéressants</h2>
+<p>
+  <strong>Copier un paquet sans que le poste accède au partage.</strong> Par défaut, les fichiers passent
+  par la session WinRM elle-même, en blocs compressés, avec un cache par empreinte sur le poste cible :
+  un paquet déjà reçu n'est pas renvoyé.
+</p>
+<p>
+  <strong>Ne pas ouvrir une faille en exécutant en SYSTEM.</strong> <code>C:\Windows\Temp</code> est
+  accessible en écriture aux utilisateurs standards : un utilisateur du poste pourrait remplacer un script
+  juste avant son exécution. WinPloy reconstitue le paquet dans un dossier dont l'héritage des droits est
+  coupé, accessible seulement à SYSTEM et aux administrateurs.
+</p>
+<p>
+  <strong>Ne pas faire confiance au dépôt.</strong> Qui peut écrire dans le partage peut faire exécuter du
+  code sur tout le parc. Le contenu attendu de chaque paquet peut être figé dans le catalogue, fichier par
+  fichier, en SHA-256. Avant chaque déploiement, WinPloy recalcule et refuse le paquet si un fichier a
+  changé.
+</p>
+<pre><code>"Files": {
+  "setup.msi":   "9f86d081884c7d65…",
+  "install.ps1": "60303ae22b998861…"
+}</code></pre>
+
+<h2>Ce que j'en retiens</h2>
+<p class="ph">[À écrire toi-même : ce que tu as appris, ce que tu referais autrement. C'est la partie que
+  les recruteurs lisent.]</p>
+  </div>
+  <div class="next-prev"><a href="rustdesk.html">← Précédent<strong>Prise en main à distance avec RustDesk</strong></a><a href="facilock.html" style="text-align:right">Suivant →<strong>FaciLock</strong></a></div>
+</div>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+  </div>
+</footer>
+
+<script src="../theme.js"></script>
+</body>
+</html>

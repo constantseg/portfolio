@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serveur Docker piloté par Git · Constant Segrétain</title>
+<meta name="description" content="Les conteneurs du serveur sont décrits dans un seul fichier versionné dans Gitea. On modifie le fichier, Portainer redéploie.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="../index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="../index.html">Accueil</a>
+      <a href="../projets.html" aria-current="page">Projets</a>
+      <a href="../competences.html">Compétences</a>
+      <a href="../documentation.html">Documentation</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <p class="crumb"><a href="../projets.html">Projets</a> / Serveur Docker piloté par Git</p>
+  <header class="project-head">
+    <h1>Serveur Docker piloté par Git</h1>
+    <p class="tagline">Les conteneurs du serveur sont décrits dans un seul fichier versionné dans Gitea. On modifie le fichier, Portainer redéploie.</p>
+  </header>
+  <dl class="factsheet">
+    <div><dt>Contexte</dt><dd>Alternance, Ensemble scolaire Saint-Benoît</dd></div>
+    <div><dt>Stack</dt><dd>Docker · Portainer · Gitea · PostgreSQL</dd></div>
+    <div><dt>Statut</dt><dd><span class="status">En service</span></dd></div>
+    <div><dt>Serveurs</dt><dd>SRV-DOCKER, SRV-GITEA</dd></div>
+  </dl>
+  <figure class="shot diagram-shot">
+    <div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Le fichier docker-compose.yml est dans Gitea ; à chaque modification, un webhook prévient Portainer qui redéploie les conteneurs du serveur Docker.">
+  <defs><marker id="ar-page" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
+  <rect x="310" y="30" width="460" height="440" rx="12" class="v-frame"/>
+  <text x="334" y="62" class="v-s v-dim">SRV-DOCKER · Ubuntu Server</text>
+  <rect x="30" y="85" width="230" height="150" rx="10" class="v-node"/>
+  <text x="54" y="125" class="v-t">Gitea</text>
+  <text x="54" y="157" class="v-s">containers-docker</text>
+  <text x="54" y="181" class="v-s">docker-compose.yml</text>
+  <text x="54" y="213" class="v-s v-dim">un seul fichier</text>
+  <rect x="30" y="300" width="230" height="130" rx="10" class="v-node"/>
+  <text x="54" y="338" class="v-t">Secrets</text>
+  <text x="54" y="368" class="v-s">variables</text>
+  <text x="54" y="392" class="v-s">${MDP_…}</text>
+  <rect x="340" y="95" width="405" height="120" rx="10" class="v-node v-hl"/>
+  <text x="364" y="135" class="v-t">Portainer</text>
+  <text x="364" y="167" class="v-s">stack serveur-production</text>
+  <text x="364" y="191" class="v-s v-dim">redéploie à chaque commit</text>
+  <rect x="340" y="300" width="190" height="52" rx="8" class="v-chip"/><text x="435" y="332" class="v-s" text-anchor="middle">semaphore</text><rect x="555" y="300" width="190" height="52" rx="8" class="v-chip"/><text x="650" y="332" class="v-s" text-anchor="middle">postgres</text><rect x="340" y="375" width="190" height="52" rx="8" class="v-chip"/><text x="435" y="407" class="v-s" text-anchor="middle">…</text><rect x="555" y="375" width="190" height="52" rx="8" class="v-chip"/><text x="650" y="407" class="v-s" text-anchor="middle">…</text>
+  <path d="M260 155 H340" class="v-l" marker-end="url(#ar-page)"/>
+  <text x="300" y="143" class="v-lb" text-anchor="middle">webhook</text>
+  <path d="M260 365 C300 365 300 190 340 190" class="v-l" marker-end="url(#ar-page)"/>
+  <path d="M542 215 V290" class="v-l" marker-end="url(#ar-page)"/>
+  <text x="552" y="258" class="v-lb">docker compose up</text>
+</svg></div>
+    <figcaption>Le fichier Compose vit dans Gitea. Un webhook prévient Portainer à chaque modification, qui redéploie les conteneurs concernés. Les mots de passe restent dans Portainer.</figcaption>
+  </figure>
+  <div class="prose">
+<h2>Le besoin</h2>
+<p>
+  Plusieurs services devaient tourner sur un même serveur, dont <a href="ansible-semaphore.html">Semaphore</a>
+  pour la sauvegarde des switchs. Je voulais pouvoir les reconstruire à l'identique, savoir qui a changé
+  quoi, et ne pas dépendre de commandes tapées à la main sur le serveur.
+</p>
+<p class="ph">[Une phrase sur la situation de départ.]</p>
+
+<h2>Gitea, le dépôt de référence</h2>
+<p>
+  Gitea est une forge Git auto-hébergée, l'équivalent d'un GitHub interne. Il tourne sous Docker avec sa
+  base PostgreSQL, sur son propre serveur. Son port SSH est décalé sur 222 pour ne pas entrer en conflit
+  avec celui du serveur Linux. Il sert à deux choses : garder l'historique des configurations des switchs,
+  et héberger le fichier Compose du serveur Docker.
+</p>
+
+<h2>Portainer, qui applique</h2>
+<p>
+  Le serveur Docker est une machine Ubuntu Server avec Docker installé depuis le dépôt officiel, et
+  Portainer pour l'administrer. Dans Portainer, la stack <code>serveur-production</code> n'est pas écrite
+  à la main : elle est lue depuis le dépôt <code>containers-docker</code> de Gitea.
+</p>
+<ul>
+  <li><strong>Un seul fichier</strong> décrit tous les conteneurs, séparés par des commentaires, avec
+    leurs volumes déclarés pour que les données survivent à une mise à jour.</li>
+  <li><strong>Un webhook</strong> : dès qu'un commit modifie le fichier, Gitea prévient Portainer, qui
+    redéploie les conteneurs modifiés.</li>
+  <li><strong>Des versions d'image fixées</strong> (par exemple <code>semaphoreui/semaphore:v2.17.33</code>) :
+    une mise à jour, c'est changer un numéro dans le fichier, et elle reste dans l'historique.</li>
+</ul>
+
+<h2>Les points d'attention</h2>
+<ul>
+  <li><strong>Aucun mot de passe dans le dépôt.</strong> Le fichier contient
+    <code>${MDP_ANSIBLE_BDD}</code> ; la valeur est déclarée dans les variables d'environnement de la
+    stack, dans Portainer.</li>
+  <li><strong>Un jeton d'accès limité.</strong> Portainer lit le dépôt privé avec un jeton Gitea qui n'a
+    que le droit de lecture sur les dépôts.</li>
+  <li><strong>De la documentation pour l'équipe</strong> : installation du serveur, liaison Gitea et
+    Portainer, et un rappel des bases de Docker (images, conteneurs, volumes, commandes utiles).</li>
+</ul>
+
+<h2>Ce que j'améliorerais</h2>
+<ul>
+  <li>Fixer aussi la version de l'image Gitea, aujourd'hui en <code>latest</code>.</li>
+  <li class="ph">[Sauvegarde des volumes ? Supervision des conteneurs ?]</li>
+</ul>
+
+<h2>Ce que j'en retiens</h2>
+<p class="ph">[À écrire toi-même.]</p>
+  </div>
+  <div class="next-prev"><a href="ansible-semaphore.html">← Précédent<strong>Sauvegarde automatique des switchs</strong></a><a href="rustdesk.html" style="text-align:right">Suivant →<strong>Prise en main à distance avec RustDesk</strong></a></div>
+</div>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+  </div>
+</footer>
+
+<script src="../theme.js"></script>
+</body>
+</html>

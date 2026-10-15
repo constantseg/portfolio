@@ -1,0 +1,107 @@
+<header class="doc">
+  <p class="kind">Procédure · sauvegarde des switchs</p>
+  <h1>Installer Semaphore et Ansible sous Docker</h1>
+  <p class="meta">Service dans le Compose, image avec Paramiko, clé SSH, dépôt Gitea, inventaire, tâche planifiée.</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Sauvegarder chaque nuit la configuration des switchs Aruba et Cisco dans un dépôt Git,
+  avec une interface web (Semaphore) pour lancer, planifier et consulter les exécutions d'Ansible.</dd>
+  <dt>Prérequis</dt><dd>Serveur Docker et Portainer (parties 1 et 2), serveur Gitea.</dd>
+  <dt>Dépôts Gitea</dt><dd><code>containers-docker</code> (fichier Compose) et <code>backups-switchs-ansible</code>
+  (playbook, inventaire, sauvegardes).</dd>
+</dl>
+
+<h2>1. Image Semaphore avec Paramiko</h2>
+<p>Les modules réseau d'Ansible se connectent aux switchs en SSH avec Paramiko, absent de l'image officielle.
+Dans le dépôt <code>containers-docker</code>, créer <code>ansible/Dockerfile</code> :</p>
+<pre><code>FROM semaphoreui/semaphore:v2.17.33
+USER root
+RUN apk add --no-cache py3-paramiko py3-pip
+USER 1001</code></pre>
+
+<h2>2. Ajouter le service au fichier Compose</h2>
+<p>Dans <code>docker-compose.yml</code> du dépôt <code>containers-docker</code>, ajouter le bloc suivant.
+Les mots de passe sont des variables renseignées dans Portainer (<em>Stacks → serveur-production → Environment variables</em>).</p>
+<pre><code># ======================================================
+# = Semaphore Ansible (sauvegarde auto des switchs)    =
+# ======================================================
+  ansible_db:
+    container_name: ansible_db
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: semaphore
+      POSTGRES_PASSWORD: ${MDP_ANSIBLE_BDD}
+      POSTGRES_DB: semaphore
+    volumes:
+      - ansible_db:/var/lib/postgresql/data
+
+  ansible_app:
+    container_name: ansible_app
+    build: ansible/.                       # utilise le Dockerfile ci-dessus
+    image: semaphoreui/semaphore:v2.17.33  # changer la version = mettre à jour
+    restart: always
+    ports:
+      - "8080:3000"
+    environment:
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_DB_HOST: ansible_db
+      SEMAPHORE_DB_PORT: 5432
+      SEMAPHORE_DB_USER: semaphore
+      SEMAPHORE_DB_PASS: ${MDP_ANSIBLE_BDD}
+      SEMAPHORE_DB: semaphore
+      SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ADMIN_NAME: admin
+      SEMAPHORE_ADMIN_EMAIL: admin@serveur.local
+      SEMAPHORE_ADMIN_PASSWORD: ${MDP_ANSIBLE_ADMIN}
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${SEMAPHORE_KEY}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ansible_ssh_keys:/tmp/ssh_keys:ro
+    depends_on:
+      - ansible_db
+
+# section volumes: en bas du fichier
+volumes:
+  ansible_db:
+  ansible_ssh_keys:</code></pre>
+<div class="warn"><p><code>SEMAPHORE_ACCESS_KEY_ENCRYPTION</code> chiffre les secrets stockés par Semaphore. On le génère une fois
+(<code>head -c32 /dev/urandom | base64</code>), on le range dans le KeePass et on ne le change plus :
+sans lui, les clés enregistrées dans Semaphore deviennent illisibles.</p></div>
+<p>Pousser le commit : le webhook déclenche Portainer, qui construit l'image et démarre les deux conteneurs.</p>
+
+<h2>3. Clé SSH dédiée</h2>
+<p>Semaphore lit le playbook dans Gitea et y pousse les sauvegardes avec une clé qui ne sert qu'à ça.</p>
+<pre><code>ssh-keygen -t ed25519 -C "cle-serveur-ansible" -f ~/.ssh/id_ed25519
+sudo mv ~/.ssh/id_ed25519 /var/lib/docker/volumes/serveur-production_ansible_ssh_keys/_data/</code></pre>
+<p>La clé publique (<code>id_ed25519.pub</code>) est ajoutée dans Gitea comme <strong>clé de déploiement avec écriture</strong>
+sur le seul dépôt <code>backups-switchs-ansible</code>.</p>
+
+<h2>4. Configuration dans Semaphore</h2>
+<p>Ouvrir <code>http://&lt;IP_SRV_DOCKER&gt;:8080</code> et se connecter avec le compte <code>admin</code>. Créer un projet, puis :</p>
+<table>
+  <tr><th>Élément</th><th>Réglage</th></tr>
+  <tr><td>Key Store</td><td>Type <em>SSH Key</em>, coller la clé privée (<code>sudo cat …/_data/id_ed25519</code>).
+  Ajouter aussi les identifiants des switchs (type <em>Login with password</em>).</td></tr>
+  <tr><td>Repository</td><td>URL <code>ssh://git@&lt;IP_SRV_GITEA&gt;:222/&lt;compte&gt;/backups-switchs-ansible.git</code>, branche <code>main</code>, clé SSH ci-dessus.</td></tr>
+  <tr><td>Inventory</td><td>Type <em>File</em>, chemin <code>hosts.ini</code> dans le dépôt.</td></tr>
+  <tr><td>Task Template</td><td>Playbook <code>backup_switch.yml</code>, inventaire et dépôt ci-dessus.</td></tr>
+</table>
+
+<h2>5. Tester puis planifier</h2>
+<ol>
+  <li>Lancer le modèle avec le bouton <em>Run</em> et suivre la sortie : chaque switch doit être <code>ok</code> ou <code>changed</code>.</li>
+  <li>Vérifier dans Gitea qu'un commit « Sauvegarde auto du … » est apparu.</li>
+  <li>Dans le modèle, onglet <em>Schedule</em> : <code>0 2 * * *</code> (tous les jours à 2 h).</li>
+</ol>
+
+<h2>Dépannage</h2>
+<table>
+  <tr><th>Symptôme</th><th>Piste</th></tr>
+  <tr><td><code>paramiko is not installed</code></td><td>Le conteneur tourne sur l'image officielle : vérifier la ligne <code>build:</code> et redéployer.</td></tr>
+  <tr><td>Un switch en <code>UNREACHABLE</code></td><td>Tester <code>ssh</code> depuis le serveur, vérifier identifiants et <code>ansible_network_os</code> (Cisco : <code>ios</code>).</td></tr>
+  <tr><td>Pas de commit dans Gitea</td><td>Aucune configuration n'a changé (normal), ou clé de déploiement sans droit d'écriture.</td></tr>
+</table>

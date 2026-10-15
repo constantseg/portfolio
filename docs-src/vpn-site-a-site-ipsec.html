@@ -1,0 +1,183 @@
+<header class="doc">
+  <p class="kind"><span class="id">CS-01</span>TP · BTS SIO 2e année · Réseau</p>
+  <h1>Relier deux sites par un VPN IPsec sous pfSense</h1>
+  <p class="meta">Tunnel IKEv2 entre deux pare-feux pfSense : clé partagée, phases 1 et 2, règles de pare-feu, tests, cas du NAT et authentification par certificat.</p>
+  <dl class="card">
+    <div><dt>Auteur</dt><dd>Constant Segrétain</dd></div>
+    <div><dt>Contexte</dt><dd>TP B2.1 · conception d'infrastructure réseau</dd></div>
+    <div><dt>Date</dt><dd>octobre 2026</dd></div>
+  </dl>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Interconnecter les réseaux locaux de deux sites à travers Internet, de façon chiffrée et authentifiée,
+  comme s'ils étaient reliés directement.</dd>
+  <dt>Bloc</dt><dd>B2.1 — « une solution permettant la connexion sécurisée entre deux sites distants ».</dd>
+  <dt>Matériel</dt><dd>Par site : un pfSense (WAN + LAN) et un serveur ou poste sur le LAN.</dd>
+</dl>
+
+<h2>1. Rappels</h2>
+<p>IPsec sécurise les échanges au niveau IP (couche 3). Entre deux réseaux, on l'utilise en <strong>mode tunnel</strong> :
+le paquet d'origine est entièrement chiffré puis encapsulé dans un nouveau paquet IP entre les deux pfSense.</p>
+<table>
+  <tr><th></th><th>Mode transport</th><th>Mode tunnel</th></tr>
+  <tr><td>Usage</td><td>Entre deux hôtes</td><td>Entre deux réseaux (VPN site à site)</td></tr>
+  <tr><td>Chiffré</td><td>Données seulement</td><td>Paquet IP complet</td></tr>
+  <tr><td>Nouvel en-tête IP</td><td>Non</td><td>Oui, adresses internes masquées</td></tr>
+</table>
+<p>La connexion se négocie en deux phases, à paramétrer <strong>à l'identique des deux côtés</strong> :</p>
+<ul>
+  <li><strong>Phase 1 (IKE SA)</strong> : les deux pairs s'authentifient (clé partagée ou certificat) et ouvrent un canal de contrôle chiffré.</li>
+  <li><strong>Phase 2 (Child SA)</strong> : ils définissent le trafic concerné (réseau local ↔ réseau distant) et son chiffrement (ESP), puis créent le tunnel.</li>
+</ul>
+<table>
+  <tr><th>Port</th><th>Rôle</th></tr>
+  <tr><td>UDP 500 (ISAKMP)</td><td>Premiers échanges IKE ; toute la négociation s'il n'y a pas de NAT.</td></tr>
+  <tr><td>UDP 4500 (NAT-T)</td><td>Si un NAT est détecté : négociation, keepalives et données ESP encapsulées.</td></tr>
+</table>
+
+<h2>2. Maquette</h2>
+<figure><img src="img/vpn-schema.png" alt="Schéma du VPN site à site">
+<figcaption>Deux sites reliés par un tunnel IPsec entre leurs pfSense (schéma du cours).</figcaption></figure>
+<table>
+  <tr><th></th><th>Site 1</th><th>Site 2</th></tr>
+  <tr><td>WAN pfSense</td><td><code>172.16.0.1</code></td><td><code>172.16.0.2</code></td></tr>
+  <tr><td>Réseau LAN</td><td><code>192.168.10.0/24</code></td><td><code>192.168.20.0/24</code></td></tr>
+  <tr><td>LAN pfSense</td><td><code>192.168.10.254</code></td><td><code>192.168.20.254</code></td></tr>
+  <tr><td>Serveur de test</td><td><code>192.168.10.10</code></td><td><code>192.168.20.10</code></td></tr>
+</table>
+<div class="warn"><p>Les deux LAN doivent être différents. S'ils se chevauchent, le routage ne sait pas de quel côté se trouve une adresse :
+il faut alors un NAT en phase 2 (voir § 8).</p></div>
+
+<h2>3. Préparer le WAN (maquette uniquement)</h2>
+<p>En TP, les WAN sont souvent dans un réseau privé. pfSense bloque par défaut les adresses privées sur le WAN,
+ce qui empêche les deux pairs de se joindre. Sur les deux pfSense :
+<em>Interfaces → WAN</em> → décocher <strong>Block private networks and loopback addresses</strong> → <em>Save</em> → <em>Apply Changes</em>.</p>
+<figure><img src="img/vpn-wan-prive.jpg" alt="Option Block private networks décochée">
+<figcaption>Option à décocher sur le WAN d'une maquette. Capture : InformatiWeb-Pro.</figcaption></figure>
+<div class="note"><p>En production, avec des WAN publics, on laisse cette option cochée.
+pfSense ajoute automatiquement sur le WAN les règles qui autorisent IKE, NAT-T et ESP depuis la passerelle distante.</p></div>
+
+<h2>4. Phase 1 (sur les deux pfSense)</h2>
+<p><em>VPN → IPsec → Tunnels</em> → <em>Add P1</em>.</p>
+<table>
+  <tr><th>Paramètre</th><th>pfSense 1</th><th>pfSense 2</th></tr>
+  <tr><td>Description</td><td>VPN vers Site 2</td><td>VPN vers Site 1</td></tr>
+  <tr><td>Key Exchange version</td><td>IKEv2</td><td>IKEv2</td></tr>
+  <tr><td>Internet Protocol</td><td>IPv4</td><td>IPv4</td></tr>
+  <tr><td>Interface</td><td>WAN</td><td>WAN</td></tr>
+  <tr><td>Remote Gateway</td><td><code>172.16.0.2</code></td><td><code>172.16.0.1</code></td></tr>
+  <tr><td>Authentication Method</td><td>Mutual PSK</td><td>Mutual PSK</td></tr>
+  <tr><td>My identifier</td><td>My IP address</td><td>My IP address</td></tr>
+  <tr><td>Peer identifier</td><td>Peer IP address</td><td>Peer IP address</td></tr>
+  <tr><td>Pre-Shared Key</td><td><em>Generate new Pre-Shared Key</em></td><td>la même clé, copiée</td></tr>
+  <tr><td>Encryption Algorithm</td><td>AES · 256 bits · SHA256 · DH 14 (2048 bit)</td><td>idem</td></tr>
+</table>
+<figure><img src="img/vpn-p1-general.png" alt="Phase 1, paramètres généraux">
+<figcaption>Phase 1 : version IKE, interface et passerelle distante. Capture : documentation Netgate (pfSense).</figcaption></figure>
+<figure><img src="img/vpn-p1-proposal.jpg" alt="Phase 1, authentification et chiffrement">
+<figcaption>Phase 1 : clé partagée générée, AES 256 / SHA256 / DH 14. Capture : InformatiWeb-Pro.</figcaption></figure>
+<p>Laisser les durées de vie par défaut, ou mettre les mêmes valeurs des deux côtés. <em>Save</em> → <em>Apply Changes</em>.</p>
+<div class="warn"><p>La clé partagée se transmet par un canal sûr (pas par courriel en clair). Générée sur le pfSense 1, elle est collée telle quelle sur le pfSense 2.</p></div>
+
+<h2>5. Phase 2 (sur les deux pfSense)</h2>
+<p>Sous la phase 1 : <em>Show Phase 2 Entries</em> → <em>Add P2</em>.</p>
+<table>
+  <tr><th>Paramètre</th><th>pfSense 1</th><th>pfSense 2</th></tr>
+  <tr><td>Mode</td><td>Tunnel IPv4</td><td>Tunnel IPv4</td></tr>
+  <tr><td>Local Network</td><td>LAN subnet</td><td>LAN subnet</td></tr>
+  <tr><td>NAT/BINAT translation</td><td>None</td><td>None</td></tr>
+  <tr><td>Remote Network</td><td>Network <code>192.168.20.0/24</code></td><td>Network <code>192.168.10.0/24</code></td></tr>
+  <tr><td>Protocol</td><td>ESP</td><td>ESP</td></tr>
+  <tr><td>Encryption Algorithms</td><td>AES256-GCM, 128 bits</td><td>idem</td></tr>
+  <tr><td>PFS key group</td><td>14 (2048 bit)</td><td>idem</td></tr>
+  <tr><td>Automatically ping host</td><td><code>192.168.20.10</code></td><td><code>192.168.10.10</code></td></tr>
+  <tr><td>Keep Alive</td><td>coché</td><td>coché</td></tr>
+</table>
+<figure><img src="img/vpn-p2-general.png" alt="Phase 2, réseaux">
+<figcaption>Phase 2 : réseau local et réseau distant du tunnel. Capture : documentation Netgate (pfSense).</figcaption></figure>
+<figure><img src="img/vpn-p2-proposal.png" alt="Phase 2, proposition">
+<figcaption>Phase 2 : ESP en AES256-GCM ; le hachage est ignoré avec GCM. Capture : documentation Netgate (pfSense).</figcaption></figure>
+<p>Le ping automatique et le keep alive (section <em>Keep Alive</em> en bas de la phase 2) envoient régulièrement du trafic dans le tunnel :
+il monte tout seul et ne retombe pas faute d'activité. <em>Save</em> → <em>Apply Changes</em>.</p>
+<figure><img src="img/vpn-tunnels.jpg" alt="Liste des tunnels P1 et P2">
+<figcaption>Résultat dans <em>VPN → IPsec → Tunnels</em> : une phase 1 et sa phase 2. Capture : InformatiWeb-Pro.</figcaption></figure>
+
+<h2>6. Règles de pare-feu</h2>
+<p>Une fois IPsec activé, pfSense crée l'onglet <em>Firewall → Rules → IPsec</em>. Le trafic qui sort du tunnel y est filtré ;
+par défaut tout est bloqué. Sur chaque pfSense, ajouter une règle :</p>
+<table>
+  <tr><th>Champ</th><th>pfSense 1</th><th>pfSense 2</th></tr>
+  <tr><td>Action / Interface</td><td>Pass / IPsec</td><td>Pass / IPsec</td></tr>
+  <tr><td>Protocol</td><td>Any (ou ICMP + ports utiles)</td><td>idem</td></tr>
+  <tr><td>Source</td><td>Network <code>192.168.20.0/24</code></td><td>Network <code>192.168.10.0/24</code></td></tr>
+  <tr><td>Destination</td><td>LAN net</td><td>LAN net</td></tr>
+</table>
+<figure><img src="img/vpn-regle-ipsec.jpg" alt="Règle de pare-feu sur l'interface IPsec">
+<figcaption>Règle IPsec : le réseau distant peut joindre le LAN. Capture : InformatiWeb-Pro.</figcaption></figure>
+<div class="note"><p>Pour un TP, « Any » suffit. En production, on n'ouvre que les flux nécessaires (par exemple SMB vers le serveur de fichiers, RDP vers un serveur précis).</p></div>
+
+<h2>7. Tester</h2>
+<ol>
+  <li><em>Status → IPsec</em> → <em>Connect P1 and P2</em> si le tunnel n'est pas déjà monté.
+  La phase 1 doit être <strong>Established</strong> et la phase 2 <strong>Installed</strong>.</li>
+  <li>Depuis le serveur du site 1, <code>ping 192.168.20.10</code> ; depuis le site 2, <code>ping 192.168.10.10</code>.</li>
+  <li>Vérifier que les compteurs d'octets de la phase 2 augmentent.</li>
+</ol>
+<figure><img src="img/vpn-statut.png" alt="Statut IPsec établi">
+<figcaption>Phase 1 établie, phase 2 installée, compteurs de trafic. Capture : documentation Netgate (pfSense).</figcaption></figure>
+<figure><img src="img/vpn-ping.jpg" alt="Ping à travers le tunnel">
+<figcaption>Ping d'un poste du site 1 vers un hôte du site 2 : le TTL baisse d'un saut, le trafic passe par le tunnel. Capture : InformatiWeb-Pro.</figcaption></figure>
+
+<h3>Dépannage</h3>
+<p>Journaux : <em>Status → System Logs → IPsec</em>.</p>
+<figure><img src="img/vpn-logs.jpg" alt="Journaux IPsec">
+<figcaption>Journaux IPsec de pfSense. Capture : InformatiWeb-Pro.</figcaption></figure>
+<table>
+  <tr><th>Symptôme</th><th>Piste</th></tr>
+  <tr><td>Phase 1 ne monte pas</td><td>Passerelle distante injoignable (ping WAN à WAN), « Block private networks » encore coché, ports UDP 500/4500 filtrés en amont.</td></tr>
+  <tr><td><code>NO_PROPOSAL_CHOSEN</code></td><td>Algorithmes, longueur de clé, hachage ou groupe DH différents entre les deux côtés.</td></tr>
+  <tr><td><code>AUTHENTICATION_FAILED</code></td><td>Clé partagée différente, ou identifiants (My / Peer identifier) incohérents.</td></tr>
+  <tr><td><code>TS_UNACCEPTABLE</code></td><td>Réseaux de la phase 2 non symétriques (local d'un côté ≠ distant de l'autre).</td></tr>
+  <tr><td>Tunnel établi mais pas de ping</td><td>Règle absente sur l'onglet IPsec, pare-feu du serveur (ICMP bloqué sous Windows), passerelle par défaut du serveur ≠ pfSense.</td></tr>
+</table>
+
+<h2>8. Cas particuliers</h2>
+<h3>pfSense derrière un routeur (box)</h3>
+<p>Si le WAN du pfSense est derrière un autre routeur, sur chaque routeur amont :</p>
+<ul>
+  <li>rediriger <strong>UDP 500</strong> et <strong>UDP 4500</strong> vers l'adresse WAN du pfSense ;</li>
+  <li>en phase 1, <em>Remote Gateway</em> = adresse publique du routeur d'en face ;</li>
+  <li><em>My identifier</em> = <strong>IP address</strong> → adresse publique de son propre routeur (celle que voit le partenaire),
+  et <em>Peer identifier</em> = adresse publique du routeur d'en face.</li>
+</ul>
+<p>Le NAT est détecté pendant la phase 1 : la suite des échanges bascule sur UDP 4500 (NAT-T).</p>
+
+<h3>Réseaux qui se chevauchent : BINAT</h3>
+<p>Si les deux sites utilisent le même réseau (ex. <code>192.168.1.0/24</code>), chacun se présente à l'autre sous une plage virtuelle
+de même masque, traduite 1 pour 1 par le pfSense.</p>
+<table>
+  <tr><th>Phase 2</th><th>Site 1 (vu comme 192.168.10.0/24)</th><th>Site 2 (vu comme 192.168.20.0/24)</th></tr>
+  <tr><td>Local Network</td><td>Network <code>192.168.1.0/24</code></td><td>Network <code>192.168.1.0/24</code></td></tr>
+  <tr><td>NAT/BINAT translation</td><td>Network <code>192.168.10.0/24</code></td><td>Network <code>192.168.20.0/24</code></td></tr>
+  <tr><td>Remote Network</td><td>Network <code>192.168.20.0/24</code></td><td>Network <code>192.168.10.0/24</code></td></tr>
+</table>
+<p>Depuis le site 1, l'hôte <code>192.168.1.50</code> du site 2 se joint alors à l'adresse <code>192.168.20.50</code>.</p>
+
+<h2>9. Bonus : authentification par certificat</h2>
+<p>Plus robuste qu'une clé partagée : chaque pfSense prouve son identité avec un certificat signé par une autorité que l'autre reconnaît.</p>
+<table>
+  <tr><th></th><th>Sur pfSense 1</th><th>Sur pfSense 2</th></tr>
+  <tr><td>Autorité (<em>System → Certificates → Authorities</em>)</td><td>Importer la CA 2 (certificat seul, sans clé)</td><td>Importer la CA 1</td></tr>
+  <tr><td>Certificat (<em>System → Certificates → Certificates</em>)</td><td>Certificat du pfSense 1, signé par la CA 1</td><td>Certificat du pfSense 2, signé par la CA 2</td></tr>
+</table>
+<ul>
+  <li>Le certificat doit contenir ce qui sert d'identifiant : l'<strong>adresse IP</strong> WAN (SAN de type IP) si les pairs se joignent par IP,
+  le <strong>nom DNS</strong> s'ils se joignent par nom. Avec pfSense, on le saisit à la création du certificat ; avec une CA Windows, dans la demande.</li>
+  <li>Phase 1, des deux côtés : <em>Authentication Method</em> = <strong>Mutual Certificate</strong>, <em>My Certificate</em> = son certificat,
+  <em>Peer Certificate Authority</em> = la CA du partenaire.</li>
+  <li><em>Status → IPsec</em> → <em>Disconnect</em> puis <em>Connect</em>, et refaire les pings.</li>
+</ul>
+
+<p class="sources">Sources des captures : documentation officielle pfSense (docs.netgate.com, « IPsec Site-to-Site VPN Example with Pre-Shared Keys ») et
+InformatiWeb-Pro (« pfSense 2.6 – Create a site-to-site VPN tunnel via IPsec »). Schéma : support de cours BTS SIO.</p>

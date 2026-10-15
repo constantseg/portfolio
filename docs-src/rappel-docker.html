@@ -1,0 +1,58 @@
+<header class="doc">
+  <p class="kind">Fiche mémo · équipe informatique</p>
+  <h1>Rappel : les bases de Docker</h1>
+  <p class="meta">Images, conteneurs, volumes, les commandes à connaître et comment lire un fichier Compose.</p>
+</header>
+
+<p>Cette fiche est destinée aux collègues qui interviennent sur le serveur Docker sans l'administrer tous les jours.
+Portainer fait l'essentiel à la souris ; ces notions servent quand il faut comprendre ou dépanner.</p>
+
+<h2>1. Trois notions</h2>
+<table>
+  <tr><th>Notion</th><th>Ce que c'est</th><th>À retenir</th></tr>
+  <tr><td><strong>Image</strong></td><td>Le modèle figé d'une application (par exemple PostgreSQL ou Semaphore), en lecture seule.</td><td>On ne modifie jamais une image, on en change la version.</td></tr>
+  <tr><td><strong>Conteneur</strong></td><td>Une image en train de tourner. On peut lancer plusieurs conteneurs à partir de la même image.</td><td>Un conteneur est <strong>jetable</strong> : tout ce qui est écrit dedans disparaît quand il est recréé.</td></tr>
+  <tr><td><strong>Volume</strong></td><td>Un dossier du serveur branché dans le conteneur.</td><td>Les données (bases, configuration) vivent dans les volumes et survivent au conteneur.</td></tr>
+</table>
+
+<h2>2. Les commandes utiles</h2>
+<table>
+  <tr><th>Commande</th><th>Usage</th></tr>
+  <tr><td><code>docker ps</code></td><td>Conteneurs en cours d'exécution, leurs noms et leurs ports.</td></tr>
+  <tr><td><code>docker ps -a</code></td><td>Tous les conteneurs, y compris arrêtés ou plantés.</td></tr>
+  <tr><td><code>docker logs &lt;nom&gt;</code></td><td>Journal du conteneur : le premier réflexe quand un service ne démarre pas. <code>-f</code> pour suivre en direct.</td></tr>
+  <tr><td><code>docker exec -it &lt;nom&gt; sh</code></td><td>Ouvrir un shell dans le conteneur (<code>bash</code> si l'image le contient).</td></tr>
+  <tr><td><code>docker restart &lt;nom&gt;</code></td><td>Redémarrer un conteneur figé.</td></tr>
+  <tr><td><code>docker volume ls</code></td><td>Lister les volumes ; ils sont stockés dans <code>/var/lib/docker/volumes/</code>.</td></tr>
+</table>
+
+<h2>3. Pourquoi Docker Compose</h2>
+<p>Sans Compose, chaque conteneur se lance avec une longue commande :</p>
+<pre><code>docker run -d --name glpi_db -p 3306:3306 -e MYSQL_ROOT_PASSWORD=... -v glpi_db:/var/lib/mysql mysql</code></pre>
+<p>Illisible, et une faute de frappe suffit à casser le service. Avec Compose, la même chose est écrite une fois dans
+<code>docker-compose.yml</code>, versionnée dans Gitea, et Docker l'applique d'un coup.</p>
+
+<h2>4. Lire un fichier Compose</h2>
+<pre><code>services:
+  uptime-kuma:                       # nom du service
+    image: louislam/uptime-kuma:2    # image et version
+    restart: always                  # redémarre après un reboot ou un plantage
+    ports:
+      - "3001:3001"                  # port du serveur : port du conteneur
+    environment:
+      TZ: Europe/Paris               # réglages ; les mots de passe via ${VARIABLE}
+    volumes:
+      - kuma_data:/app/data          # volume : dossier dans le conteneur
+
+volumes:
+  kuma_data:</code></pre>
+<table>
+  <tr><th>Mot-clé</th><th>Rôle</th></tr>
+  <tr><td><code>services</code></td><td>La liste des conteneurs à lancer.</td></tr>
+  <tr><td><code>image</code></td><td>Le programme à utiliser, avec sa version.</td></tr>
+  <tr><td><code>ports</code></td><td><code>"3001:3001"</code> = le port 3001 du serveur est relié au port 3001 du conteneur.</td></tr>
+  <tr><td><code>environment</code></td><td>Les réglages passés à l'application.</td></tr>
+  <tr><td><code>volumes</code></td><td>Où sont gardées les données qui doivent survivre au conteneur.</td></tr>
+</table>
+<div class="warn"><p>Sur notre serveur, on ne lance pas <code>docker compose up</code> à la main : on modifie le fichier dans Gitea
+et Portainer redéploie (voir « Relier Gitea et Portainer »).</p></div>

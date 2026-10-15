@@ -1,0 +1,39 @@
+<header class="doc">
+  <p class="kind">Procédure · RustDesk</p>
+  <h1>Installer RustDesk à distance, ponctuellement</h1>
+  <p class="meta">L'outil PowerShell et PsExec pour installer ou retirer le client d'un poste.</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Installer ou désinstaller le client RustDesk sur un poste précis sans attendre son redémarrage
+  (la GPO n'agit qu'au démarrage) et sans se déplacer.</dd>
+  <dt>Outil</dt><dd>Script PowerShell avec une petite fenêtre WinForms (<code>rustdesk-client-gestion.ps1</code>), aussi compilé en <code>.exe</code>.</dd>
+</dl>
+
+<h2>1. Prérequis</h2>
+<ul>
+  <li>Être administrateur du domaine sur le poste cible.</li>
+  <li>PsExec (Sysinternals) sur le poste d'administration : télécharger l'archive, extraire <code>PsExec.exe</code> dans <code>C:\Windows\System32\</code>.</li>
+  <li>Le poste cible est allumé et joignable (partage administratif <code>ADMIN$</code> accessible).</li>
+</ul>
+
+<h2>2. Utilisation</h2>
+<ol>
+  <li>Lancer <code>RustDesk-client-gestion.exe</code> (ou le script <code>.ps1</code>) sur le poste d'administration.</li>
+  <li>Saisir le nom ou l'adresse IP du poste cible.</li>
+  <li>Cliquer sur <em>Installer</em> ou <em>Désinstaller</em>.</li>
+  <li>Une console s'ouvre : les lignes « error code 0 » et « error code 1 » sont normales. Attendre le message de fin.</li>
+  <li>Le poste apparaît dans la console RustDesk (<em>Système → Appareils</em>).</li>
+</ol>
+
+<h2>3. Ce que fait l'outil</h2>
+<p>Installation : <code>psexec \\&lt;poste&gt; -s -c -f &lt;lanceur d'installation&gt;</code>. PsExec copie le lanceur sur le poste (<code>-c -f</code>)
+et l'exécute avec les droits <code>SYSTEM</code> (<code>-s</code>) ; le lanceur installe le client puis applique la même configuration que la GPO
+(serveur, clé publique).</p>
+<p>Désinstallation : <code>psexec \\&lt;poste&gt; -s cmd /c "C:\Program Files\RustDesk\rustdesk.exe" --uninstall</code>.</p>
+
+<h2>4. Après une désinstallation</h2>
+<p>Supprimer le poste dans la console RustDesk (<em>Système → Appareils</em>) pour garder une liste à jour.</p>
+
+<div class="note"><p>Cet outil répond à un besoin ponctuel. Pour installer une application sur un lot de postes, voir WinPloy,
+qui passe par WinRM plutôt que PsExec et vérifie l'intégrité des paquets.</p></div>

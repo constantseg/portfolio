@@ -1,0 +1,93 @@
+<header class="doc">
+  <p class="kind">Procédure · SRV-RUSTDESK</p>
+  <h1>Installer le serveur RustDesk et déployer le client</h1>
+  <p class="meta">Conteneur RustDesk, clé publique, script d'installation, GPO au démarrage.</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Un serveur de prise en main à distance hébergé en interne : aucune session ne passe par les serveurs publics de RustDesk.</dd>
+  <dt>Image</dt><dd><code>lejianwen/rustdesk-server-s6</code> : serveur ID + relais + API et console web
+  (projet <code>github.com/lejianwen/rustdesk-api</code>).</dd>
+  <dt>Sécurité</dt><dd>Connexions chiffrées obligatoires ; une règle du pare-feu bloque tout accès Internet au serveur.</dd>
+</dl>
+
+<h2>1. Serveur</h2>
+<p>Ubuntu Server, nom d'hôte <code>SRV-RUSTDESK</code>, IP fixe <code>&lt;IP_SRV_RUSTDESK&gt;</code>, SSH activé.
+Installer Docker depuis le dépôt officiel (voir « Installer le serveur Docker et Portainer », étape 2).</p>
+
+<h2>2. Fichier Compose</h2>
+<pre><code>sudo mkdir -p /data &amp;&amp; cd /data
+sudo nano docker-compose.yml</code></pre>
+<pre><code>services:
+  rustdesk:
+    container_name: rustdesk-server
+    image: lejianwen/rustdesk-server-s6:latest
+    restart: unless-stopped
+    ports:
+      - "21114:21114"       # API web
+      - "21115:21115"       # test NAT
+      - "21116:21116"       # serveur ID (TCP)
+      - "21116:21116/udp"   # serveur ID (UDP), indispensable
+      - "21117:21117"       # relais
+      - "21118:21118"       # WebSocket
+      - "21119:21119"       # WebSocket relais
+    environment:
+      - TZ=Europe/Paris
+      - ENCRYPTED_ONLY=1    # refuse tout client sans la clé publique
+      - MUST_LOGIN=N
+      - RELAY=&lt;IP_SRV_RUSTDESK&gt;:21117
+      - RUSTDESK_API_RUSTDESK_ID_SERVER=&lt;IP_SRV_RUSTDESK&gt;:21116
+      - RUSTDESK_API_RUSTDESK_RELAY_SERVER=&lt;IP_SRV_RUSTDESK&gt;:21117
+      - RUSTDESK_API_RUSTDESK_API_SERVER=http://&lt;IP_SRV_RUSTDESK&gt;:21114
+      - RUSTDESK_API_JWT_KEY=${JWT_KEY}              # fichier .env, 64 caractères aléatoires
+      - RUSTDESK_API_KEY_FILE=/data/id_ed25519.pub
+      - RUSTDESK_API_JWT_EXPIRE_DURATION=4h
+    volumes:
+      - ./data:/data        # clés et base : un seul dossier à sauvegarder
+      - ./data/db:/app/data
+    logging:                # rotation des journaux
+      driver: json-file
+      options: { max-size: "10m", max-file: "4" }</code></pre>
+<pre><code>echo "JWT_KEY=$(openssl rand -hex 32)" | sudo tee /data/.env &amp;&amp; sudo chmod 600 /data/.env
+sudo docker compose up -d</code></pre>
+
+<h2>3. Après le premier démarrage</h2>
+<pre><code># mot de passe de la console web (à ranger dans le KeePass)
+sudo docker exec -it rustdesk-server ./apimain reset-admin-pwd '&lt;mot de passe&gt;'
+
+# clé publique à donner aux clients
+sudo cat /data/data/id_ed25519.pub</code></pre>
+<p>La console web est accessible sur <code>http://&lt;IP_SRV_RUSTDESK&gt;:21114/</code>.</p>
+
+<h2>4. Déploiement du client par GPO</h2>
+<p>Sur le partage de distribution (<code>\\&lt;serveur-fichiers&gt;\Distributions\RustDesk\</code>) :</p>
+<ul>
+  <li><code>rustdesk.exe</code> : l'installeur officiel du client ;</li>
+  <li><code>install-RustDesk.bat</code> : le script qui installe puis configure le client.</li>
+</ul>
+<p>Le script ne réinstalle pas si le client est déjà présent, puis applique la configuration à chaque démarrage :</p>
+<pre><code>if not exist "C:\Program Files\RustDesk\rustdesk.exe" (
+    copy /Y "%SOURCE%" "%TEMP%\rustdesk_install.exe"
+    "%TEMP%\rustdesk_install.exe" --silent-install
+    timeout /t 15 /nobreak &gt;NUL          &amp;:: laisser le service démarrer
+)
+set RD="C:\Program Files\RustDesk\rustdesk.exe"
+%RD% --option custom-rendezvous-server %SERVEUR%
+%RD% --option relay-server %SERVEUR%
+%RD% --option api-server http://%SERVEUR%:21114
+%RD% --option key %CLE_PUBLIQUE%
+%RD% --option verification-method use-permanent-password
+%RD% --option enable-random-password 0</code></pre>
+<p>Le script est converti en exécutable (Bat To Exe Converter), puis lancé par une GPO ordinateur
+(<em>Configuration ordinateur → Stratégies → Paramètres Windows → Scripts → Démarrage</em>)
+liée à l'OU des postes. On teste d'abord sur une OU de test avec une GPO dédiée.</p>
+<div class="warn"><p><strong>Limite connue.</strong> Le mot de passe permanent du client est défini dans ce script.
+Convertir un <code>.bat</code> en <code>.exe</code> ne le protège pas : l'exécutable se décompresse et le partage est lisible par tous les postes.
+Piste d'amélioration : n'autoriser la prise en main qu'aux comptes connectés à la console (carnet d'adresses),
+ou réduire les droits de lecture du partage au seul compte ordinateur.</p></div>
+
+<h2>5. Vérifier</h2>
+<ul>
+  <li>Après redémarrage d'un poste de test, il apparaît dans la console web, menu <em>Appareils</em>.</li>
+  <li>Une prise en main depuis la console fonctionne, avec le cadenas « chiffré » dans la barre RustDesk.</li>
+</ul>

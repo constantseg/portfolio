@@ -1,0 +1,82 @@
+<header class="doc">
+  <p class="kind">TP · BTS SIO SISR · cybersécurité</p>
+  <h1>Audit Active Directory et GPO de restriction</h1>
+  <p class="meta">Domaine de laboratoire <code>constant.local</code> · PingCastle, BloodHound, stratégies de groupe · mars 2026</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Mesurer le niveau de risque d'un domaine Active Directory, corriger une partie des points relevés,
+  puis appliquer des GPO de restriction sur les postes et vérifier leur effet.</dd>
+  <dt>Outils</dt><dd>PingCastle (score de risque), BloodHound depuis Exegol (chemins d'attaque), console de gestion des stratégies de groupe.</dd>
+  <dt>Environnement</dt><dd>Un contrôleur de domaine Windows Server, un poste Windows 11 joint au domaine.</dd>
+</dl>
+
+<h2>1. Politique de mots de passe</h2>
+<figure><img src="img/ad-politique-mdp.png" alt="Default Domain Policy, stratégie de mot de passe">
+<figcaption>Default Domain Policy : stratégie de mot de passe et de verrouillage relevée.</figcaption></figure>
+<table>
+  <tr><th>Paramètre</th><th>Valeur relevée</th><th>Recommandation ANSSI</th></tr>
+  <tr><td>Longueur minimale</td><td>8 caractères</td><td>12 caractères minimum avec complexité (plus pour les comptes à privilèges)</td></tr>
+  <tr><td>Complexité</td><td>Activée</td><td>Activée</td></tr>
+  <tr><td>Historique</td><td>12 mots de passe</td><td>Conforme</td></tr>
+  <tr><td>Seuil de verrouillage</td><td>0 (jamais)</td><td>Verrouiller après quelques échecs pour freiner la force brute</td></tr>
+</table>
+
+<h2>2. Score PingCastle</h2>
+<figure><img src="img/ad-pingcastle-score.png" alt="PingCastle Domain Risk Level 70/100">
+<figcaption>Audit initial : niveau de risque du domaine de 70/100 (plus le score est bas, mieux c'est).</figcaption></figure>
+<p>PingCastle classe ses contrôles en quatre familles. La couleur indique la gravité des points trouvés :
+orange = élevée, jaune = moyenne, bleu = information, blanc = rien à signaler.</p>
+<figure><img src="img/ad-pingcastle-avant.png" alt="Matrice de risques avant corrections">
+<figcaption>Matrice de risques, audit initial.</figcaption></figure>
+<figure><img src="img/ad-pingcastle-apres.png" alt="Matrice de risques après corrections">
+<figcaption>Matrice de risques après corrections.</figcaption></figure>
+<table>
+  <tr><th>Contrôle</th><th>Avant</th><th>Après</th></tr>
+  <tr><td>Inactive user or computer</td><td>moyen</td><td>rien à signaler</td></tr>
+  <tr><td>Old authentication protocols</td><td>élevé</td><td>information</td></tr>
+  <tr><td>Irreversible change</td><td>élevé</td><td>moyen</td></tr>
+</table>
+<p>Restent à traiter : la prise de contrôle de comptes à privilèges (<em>Account take over</em>, <em>Admin control</em>),
+la sauvegarde de l'annuaire (<em>Backup</em>) et l'exposition aux attaques de type <em>Pass-the-credential</em>.</p>
+
+<h2>3. Chemins d'attaque avec BloodHound</h2>
+<figure><img src="img/ad-bloodhound.png" alt="Graphe BloodHound du domaine constant.local">
+<figcaption>Graphe BloodHound : 9 utilisateurs, 61 groupes, 3 ordinateurs, 4 GPO.</figcaption></figure>
+<p>BloodHound représente les relations de l'annuaire sous forme de graphe et met en évidence les raccourcis vers les droits d'administration. Deux relations ressortent :</p>
+<ul>
+  <li><strong>GRP_TECHNICIENS est membre de Admins du domaine</strong> : tout compte technicien compromis donne le contrôle du domaine.
+  Il faut une délégation ciblée (réinitialisation de mots de passe, jonction de postes) plutôt que l'appartenance au groupe.</li>
+  <li><strong>Utilisateurs du domaine a le droit CanRDP sur le serveur</strong> : n'importe quel compte peut ouvrir une session à distance sur le serveur.
+  Ce droit doit être limité à un groupe d'administration.</li>
+</ul>
+
+<h2>4. GPO de restriction sur les postes</h2>
+<p>Trois GPO utilisateur, liées à l'OU des utilisateurs standards. Pour chacune : le paramètre, puis la preuve sur le poste après <code>gpupdate /force</code>.</p>
+
+<h3>Désactiver l'invite de commandes</h3>
+<p><em>Configuration utilisateur → Modèles d'administration → Système → Désactiver l'accès à l'invite de commandes</em>.</p>
+<figure><img src="img/gpo-cmd-param.png" alt="Paramètre GPO invite de commandes"></figure>
+<figure><img src="img/gpo-cmd-test.png" alt="Invite de commandes désactivée par l'administrateur">
+<figcaption>Sur le poste : « L'invite de commandes a été désactivée par votre administrateur ».</figcaption></figure>
+
+<h3>Bloquer le stockage amovible</h3>
+<p><em>Système → Accès au stockage amovible</em> : refuser l'accès en lecture aux CD/DVD et aux disques amovibles.</p>
+<figure><img src="img/gpo-usb-param.png" alt="Paramètres GPO stockage amovible"></figure>
+<figure><img src="img/gpo-usb-test.png" alt="Lecteur D: accès refusé">
+<figcaption>Sur le poste : le lecteur amovible est visible mais l'accès est refusé.</figcaption></figure>
+
+<h3>Interdire le Panneau de configuration</h3>
+<p><em>Panneau de configuration → Interdire l'accès au Panneau de configuration et à l'application Paramètres du PC</em>.</p>
+<figure><img src="img/gpo-panneau-param.png" alt="Paramètre GPO panneau de configuration"></figure>
+<figure><img src="img/gpo-panneau-test.png" alt="Opération annulée en raison de restrictions">
+<figcaption>Sur le poste : « Cette opération a été annulée en raison de restrictions sur cet ordinateur ».</figcaption></figure>
+
+<h2>5. Recommandations</h2>
+<ol>
+  <li>Passer la longueur minimale des mots de passe à 12 caractères et activer le verrouillage de compte.</li>
+  <li>Retirer GRP_TECHNICIENS de Admins du domaine et lui déléguer uniquement les tâches nécessaires sur les OU concernées.</li>
+  <li>Restreindre le droit d'ouverture de session Bureau à distance sur les serveurs à un groupe d'administration.</li>
+  <li>Mettre en place une sauvegarde régulière de l'annuaire (état du système des contrôleurs de domaine) et la tester.</li>
+  <li>Relancer PingCastle après chaque série de corrections pour suivre l'évolution du score.</li>
+</ol>

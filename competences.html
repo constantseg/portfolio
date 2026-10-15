@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compétences · Constant Segrétain</title>
+<meta name="description" content="Compétences en systèmes, réseau et automatisation, avec l'endroit où chacune a été mise en pratique, et tableau de synthèse BTS SIO SISR.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="projets.html">Projets</a>
+      <a href="competences.html" aria-current="page">Compétences</a>
+      <a href="documentation.html">Documentation</a>
+      <a href="veille.html">Veille</a>
+      <a href="parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">Compétences</p>
+    <h1>Ce que je sais faire, et où je l'ai fait</h1>
+    <p>Pas de barres de niveau : pour chaque compétence, le projet ou le TP où je l'ai utilisée.
+      Le tableau de synthèse du BTS est <a href="#synthese">en bas de page</a>.</p>
+  </header>
+  <section class="domain">
+    <div>
+      <h2>Systèmes Windows</h2>
+      
+    </div>
+    <ul class="skill-list">
+          <li><span>Active Directory</span><span class="where">certification <a href="parcours.html">Microsoft Applied Skills AD DS</a>, recherche de postes dans <a href="projets/winploy.html">WinPloy</a>, <a href="docs/audit-ad-gpo.pdf">audit AD et GPO</a></span></li>
+          <li><span>Déploiement par GPO</span><span class="where">installation et configuration du client <a href="projets/rustdesk.html">RustDesk</a> au démarrage</span></li>
+          <li><span>Scripts batch, PowerShell</span><span class="where">script d'installation <a href="projets/rustdesk.html">RustDesk</a>, outil graphique WinForms, <a href="projets/winploy.html">WinPloy</a></span></li>
+          <li><span>PsExec, WinRM</span><span class="where">installation ponctuelle <a href="projets/rustdesk.html">RustDesk</a>, <a href="projets/winploy.html">WinPloy</a></span></li>
+          <li><span>WinGet, MSI</span><span class="where"><a href="projets/winploy.html">WinPloy</a></span></li>
+    </ul>
+  </section>
+  <section class="domain">
+    <div>
+      <h2>Linux et conteneurs</h2>
+      
+    </div>
+    <ul class="skill-list">
+          <li><span>Ubuntu Server</span><span class="where"><a href="projets/docker-gitops.html">serveur Docker</a>, Gitea, serveur <a href="projets/rustdesk.html">RustDesk</a></span></li>
+          <li><span>Docker, Docker Compose</span><span class="where"><a href="projets/docker-gitops.html">serveur Docker</a>, Gitea, <a href="projets/rustdesk.html">RustDesk</a>, Semaphore</span></li>
+          <li><span>Portainer</span><span class="where">stack pilotée par Git sur le <a href="projets/docker-gitops.html">serveur Docker</a></span></li>
+          <li><span>Durcissement, audit</span><span class="where">TP <a href="docs/durcissement-linux.pdf">durcissement Debian</a>, <a href="docs/audit-technique.pdf">script d'audit</a></span></li>
+          <li><span>Bash, SSH</span><span class="where">administration des serveurs, OverTheWire Bandit</span></li>
+    </ul>
+  </section>
+  <section class="domain">
+    <div>
+      <h2>Réseau</h2>
+      
+    </div>
+    <ul class="skill-list">
+          <li><span>Switchs Aruba et Cisco</span><span class="where"><a href="projets/ansible-semaphore.html">sauvegarde des switchs</a> (43 switchs, 3 sites)</span></li>
+          <li><span>Ports, pare-feu</span><span class="where">ports du serveur <a href="projets/rustdesk.html">RustDesk</a>, port SSH de Gitea décalé</span></li>
+          <li><span>TCP/IP, adressage, VLAN</span><span class="where">TP</span></li>
+          <li><span>Cisco Packet Tracer</span><span class="where">initiation au réseau</span></li>
+    </ul>
+  </section>
+  <section class="domain">
+    <div>
+      <h2>Automatisation</h2>
+      
+    </div>
+    <ul class="skill-list">
+          <li><span>Ansible</span><span class="where">playbook et inventaire de la <a href="projets/ansible-semaphore.html">sauvegarde des switchs</a></span></li>
+          <li><span>Semaphore</span><span class="where">planification et historique de la <a href="projets/ansible-semaphore.html">sauvegarde des switchs</a></span></li>
+          <li><span>Git, Gitea</span><span class="where">historique des configurations, fichier Compose du <a href="projets/docker-gitops.html">serveur Docker</a></span></li>
+          <li><span>Webhooks</span><span class="where">Gitea → Portainer sur le <a href="projets/docker-gitops.html">serveur Docker</a></span></li>
+    </ul>
+  </section>
+  <section class="domain">
+    <div>
+      <h2>Sécurité</h2>
+      
+    </div>
+    <ul class="skill-list">
+          <li><span>Gestion des secrets</span><span class="where">mots de passe en variables d'environnement dans Portainer (<a href="projets/docker-gitops.html">serveur Docker</a>)</span></li>
+          <li><span>Moindre privilège</span><span class="where">jeton Gitea en lecture seule pour Portainer, dossier verrouillé dans <a href="projets/winploy.html">WinPloy</a></span></li>
+          <li><span>Chiffrement</span><span class="where">connexions <a href="projets/rustdesk.html">RustDesk</a> chiffrées obligatoires, clés SSH ed25519</span></li>
+          <li><span>Intégrité</span><span class="where">empreintes SHA-256 des paquets dans <a href="projets/winploy.html">WinPloy</a></span></li>
+    </ul>
+  </section>
+  <section class="domain">
+    <div>
+      <h2>Développement</h2>
+      <p class="domain-desc">Quand il faut un outil.</p>
+    </div>
+    <ul class="skill-list">
+          <li><span>C#, .NET 8, WPF</span><span class="where"><a href="projets/winploy.html">WinPloy</a></span></li>
+          <li><span>PowerShell WinForms</span><span class="where">outil d'installation <a href="projets/rustdesk.html">RustDesk</a></span></li>
+          <li><span>Python, Flask, OpenCV</span><span class="where">serveur et reconnaissance faciale de <a href="projets/facilock.html">FaciLock</a></span></li>
+          <li><span>Arduino, Raspberry Pi</span><span class="where">digicode, LCD et liaison série de <a href="projets/facilock.html">FaciLock</a></span></li>
+          <li><span>React Native</span><span class="where">application mobile de <a href="projets/facilock.html">FaciLock</a></span></li>
+          <li><span>YAML</span><span class="where">playbook Ansible, fichiers Compose</span></li>
+    </ul>
+  </section>
+
+  <section class="block" id="synthese">
+    <div class="block-head">
+      <h2>Tableau de synthèse BTS SIO SISR</h2>
+    </div>
+    <p class="section-note">Compétences du référentiel couvertes par chaque réalisation.</p>
+    <div class="table-scroll">
+      <table class="synth">
+        <thead><tr><th scope="col"><span class="sr">Compétence</span></th><th scope="col"><a href="projets/ansible-semaphore.html">Switchs</a></th><th scope="col"><a href="projets/docker-gitops.html">Docker</a></th><th scope="col"><a href="projets/rustdesk.html">RustDesk</a></th><th scope="col"><a href="projets/winploy.html">WinPloy</a></th><th scope="col">Audit AD</th><th scope="col">Linux</th></tr></thead>
+        <tbody>
+      <tr class="bloc"><th colspan="7" scope="rowgroup">Bloc 1 · Support et mise à disposition de services informatiques</th></tr>
+      <tr><th scope="row">Gérer le patrimoine informatique</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td></tr>
+      <tr><th scope="row">Répondre aux incidents et aux demandes d'assistance</th><td></td><td></td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td></td></tr>
+      <tr><th scope="row">Développer la présence en ligne de l'organisation</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><th scope="row">Travailler en mode projet</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td></td></tr>
+      <tr><th scope="row">Mettre à disposition un service informatique</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td></td></tr>
+      <tr><th scope="row">Organiser son développement professionnel</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td></tr>
+      <tr class="bloc"><th colspan="7" scope="rowgroup">Bloc 2 · Administration des systèmes et des réseaux (SISR)</th></tr>
+      <tr><th scope="row">Concevoir une solution d'infrastructure réseau</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td></td><td></td></tr>
+      <tr><th scope="row">Installer, tester et déployer une solution d'infrastructure</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td class="yes" aria-label="oui">●</td></tr>
+      <tr><th scope="row">Exploiter, dépanner et superviser une infrastructure</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td></tr>
+      <tr class="bloc"><th colspan="7" scope="rowgroup">Bloc 3 · Cybersécurité des services informatiques</th></tr>
+      <tr><th scope="row">Protéger les données à caractère personnel</th><td></td><td></td><td class="yes" aria-label="oui">●</td><td></td><td></td><td></td></tr>
+      <tr><th scope="row">Préserver l'identité numérique de l'organisation</th><td></td><td></td><td></td><td></td><td class="yes" aria-label="oui">●</td><td></td></tr>
+      <tr><th scope="row">Sécuriser les équipements et les usages des utilisateurs</th><td></td><td></td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td></tr>
+      <tr><th scope="row">Garantir disponibilité, intégrité et confidentialité</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td></td><td class="yes" aria-label="oui">●</td></tr>
+      <tr><th scope="row">Assurer la cybersécurité d'une infrastructure, d'un système</th><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td><td class="yes" aria-label="oui">●</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain</p>
+  </div>
+</footer>
+
+<script src="theme.js"></script>
+</body>
+</html>

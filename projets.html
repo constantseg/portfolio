@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projets · Constant Segrétain</title>
+<meta name="description" content="Projets personnels et travaux de BTS SIO SISR.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="projets.html" aria-current="page">Projets</a>
+      <a href="competences.html">Compétences</a>
+      <a href="documentation.html">Documentation</a>
+      <a href="veille.html">Veille</a>
+      <a href="parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">Projets</p>
+    <h1>Ce que j'ai construit</h1>
+    <p>Des services en production, un outil que j'ai écrit, et les travaux pratiques du BTS qui m'ont le plus appris.</p>
+  </header>
+
+  <h2 class="group-title">Réalisations</h2>
+  <p class="group-desc">Chaque projet a sa page : contexte, fonctionnement, difficultés.</p>
+  <div class="showcase">
+    <a class="card card-main" href="projets/ansible-semaphore.html">
+      <div class="card-img"><div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Semaphore lance Ansible chaque nuit : connexion SSH aux 43 switchs des trois sites, puis envoi des configurations dans Gitea.">
+  <defs><marker id="ar-ansible-semaphore" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
+  <rect x="30" y="40" width="260" height="190" rx="10" class="v-node v-hl"/>
+  <text x="54" y="80" class="v-t">Semaphore</text>
+  <text x="54" y="112" class="v-s">ansible-playbook</text>
+  <text x="54" y="136" class="v-s">backup_switch.yml</text>
+  <rect x="54" y="168" width="150" height="34" rx="17" class="v-pill"/>
+  <text x="129" y="190" class="v-pill-t" text-anchor="middle">chaque nuit, 2 h</text>
+  <rect x="30" y="310" width="260" height="155" rx="10" class="v-node"/>
+  <text x="54" y="350" class="v-t">Gitea</text>
+  <text x="54" y="382" class="v-s">backups/&lt;site&gt;/</text>
+  <text x="54" y="406" class="v-s">&lt;switch&gt;.cfg</text>
+  <text x="54" y="440" class="v-s v-dim">un commit par nuit</text>
+  <path d="M120 230 V310" class="v-l" marker-end="url(#ar-ansible-semaphore)"/>
+  <path d="M200 310 V230" class="v-l" marker-end="url(#ar-ansible-semaphore)"/>
+  <text x="112" y="275" class="v-lb" text-anchor="end">configs</text>
+  <text x="208" y="275" class="v-lb">playbook</text>
+  <path d="M290 110 C380 110 380 97 470 97" class="v-l" marker-end="url(#ar-ansible-semaphore)"/>
+  <path d="M290 135 C380 135 380 252 470 252" class="v-l" marker-end="url(#ar-ansible-semaphore)"/>
+  <path d="M290 160 C380 160 380 407 470 407" class="v-l" marker-end="url(#ar-ansible-semaphore)"/>
+  <text x="380" y="85" class="v-lb" text-anchor="middle">SSH</text>
+  <rect x="470" y="40" width="300" height="115" rx="10" class="v-node"/><text x="492" y="72" class="v-t">Site C</text><text x="748" y="72" class="v-s" text-anchor="end">19 switchs</text><rect x="492" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="195" width="300" height="115" rx="10" class="v-node"/><text x="492" y="227" class="v-t">Site U</text><text x="748" y="227" class="v-s" text-anchor="end">17 switchs</text><rect x="492" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="350" width="300" height="115" rx="10" class="v-node"/><text x="492" y="382" class="v-t">Site N</text><text x="748" y="382" class="v-s" text-anchor="end">7 switchs</text><rect x="492" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="400" width="13" height="13" rx="3" class="v-sw"/>
+</svg></div></div>
+      <div class="card-body">
+        <div class="card-top">
+          <h3>Sauvegarde automatique des switchs</h3>
+          <span class="status">En service</span>
+        </div>
+        <p>Chaque nuit, Ansible récupère la configuration de 43 switchs Aruba et Cisco répartis sur 3 sites et la versionne dans Git. Piloté depuis Semaphore.</p>
+        <span class="stack">Ansible · Semaphore · Docker · Gitea</span>
+      </div>
+    </a>
+    <a class="card" href="projets/docker-gitops.html">
+      <div class="card-img"><div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Le fichier docker-compose.yml est dans Gitea ; à chaque modification, un webhook prévient Portainer qui redéploie les conteneurs du serveur Docker.">
+  <defs><marker id="ar-docker-gitops" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
+  <rect x="310" y="30" width="460" height="440" rx="12" class="v-frame"/>
+  <text x="334" y="62" class="v-s v-dim">SRV-DOCKER · Ubuntu Server</text>
+  <rect x="30" y="85" width="230" height="150" rx="10" class="v-node"/>
+  <text x="54" y="125" class="v-t">Gitea</text>
+  <text x="54" y="157" class="v-s">containers-docker</text>
+  <text x="54" y="181" class="v-s">docker-compose.yml</text>
+  <text x="54" y="213" class="v-s v-dim">un seul fichier</text>
+  <rect x="30" y="300" width="230" height="130" rx="10" class="v-node"/>
+  <text x="54" y="338" class="v-t">Secrets</text>
+  <text x="54" y="368" class="v-s">variables</text>
+  <text x="54" y="392" class="v-s">${MDP_…}</text>
+  <rect x="340" y="95" width="405" height="120" rx="10" class="v-node v-hl"/>
+  <text x="364" y="135" class="v-t">Portainer</text>
+  <text x="364" y="167" class="v-s">stack serveur-production</text>
+  <text x="364" y="191" class="v-s v-dim">redéploie à chaque commit</text>
+  <rect x="340" y="300" width="190" height="52" rx="8" class="v-chip"/><text x="435" y="332" class="v-s" text-anchor="middle">semaphore</text><rect x="555" y="300" width="190" height="52" rx="8" class="v-chip"/><text x="650" y="332" class="v-s" text-anchor="middle">postgres</text><rect x="340" y="375" width="190" height="52" rx="8" class="v-chip"/><text x="435" y="407" class="v-s" text-anchor="middle">…</text><rect x="555" y="375" width="190" height="52" rx="8" class="v-chip"/><text x="650" y="407" class="v-s" text-anchor="middle">…</text>
+  <path d="M260 155 H340" class="v-l" marker-end="url(#ar-docker-gitops)"/>
+  <text x="300" y="143" class="v-lb" text-anchor="middle">webhook</text>
+  <path d="M260 365 C300 365 300 190 340 190" class="v-l" marker-end="url(#ar-docker-gitops)"/>
+  <path d="M542 215 V290" class="v-l" marker-end="url(#ar-docker-gitops)"/>
+  <text x="552" y="258" class="v-lb">docker compose up</text>
+</svg></div></div>
+      <div class="card-body">
+        <div class="card-top">
+          <h3>Serveur Docker piloté par Git</h3>
+          <span class="status">En service</span>
+        </div>
+        <p>Tous les conteneurs décrits dans un seul fichier Compose versionné dans Gitea. À chaque modification, Portainer redéploie.</p>
+        <span class="stack">Docker · Portainer · Gitea</span>
+      </div>
+    </a>
+    <a class="card" href="projets/rustdesk.html">
+      <div class="card-img"><div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Serveur RustDesk auto-hébergé sous Docker : les postes sont installés par GPO, les techniciens prennent la main depuis le client ou le navigateur.">
+  <defs><marker id="ar-rustdesk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
+  <rect x="285" y="120" width="230" height="230" rx="12" class="v-node v-hl"/>
+  <text x="309" y="160" class="v-t">SRV-RUSTDESK</text>
+  <text x="309" y="192" class="v-s">Docker</text>
+  <text x="309" y="216" class="v-s">serveur ID + relais</text>
+  <text x="309" y="240" class="v-s">API, console web</text>
+  <rect x="309" y="276" width="182" height="34" rx="17" class="v-pill"/>
+  <text x="400" y="298" class="v-pill-t" text-anchor="middle">chiffrement imposé</text>
+  <rect x="30" y="40" width="200" height="130" rx="10" class="v-node"/>
+  <text x="52" y="78" class="v-t">GPO</text>
+  <text x="52" y="108" class="v-s">au démarrage</text>
+  <text x="52" y="132" class="v-s">install + config</text>
+  <rect x="30" y="300" width="200" height="160" rx="10" class="v-node"/>
+  <text x="52" y="338" class="v-t">Postes</text>
+  <rect x="52" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="92" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="112" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="132" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="152" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="172" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="192" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="52" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="92" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="112" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="132" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="152" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="172" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="192" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="52" y="402" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="402" width="14" height="14" rx="3" class="v-pc"/>
+  <rect x="570" y="40" width="200" height="130" rx="10" class="v-node"/>
+  <text x="592" y="78" class="v-t">Technicien</text>
+  <text x="592" y="108" class="v-s">client RustDesk</text>
+  <text x="592" y="132" class="v-s">carnet d'adresses</text>
+  <rect x="570" y="300" width="200" height="130" rx="10" class="v-node"/>
+  <text x="592" y="338" class="v-t">Navigateur</text>
+  <text x="592" y="368" class="v-s">prise en main</text>
+  <text x="592" y="392" class="v-s">sans client</text>
+  <path d="M130 170 V300" class="v-l" marker-end="url(#ar-rustdesk)"/>
+  <path d="M230 380 C260 380 255 290 285 290" class="v-l" marker-end="url(#ar-rustdesk)"/>
+  <path d="M570 105 C540 105 545 180 515 180" class="v-l" marker-end="url(#ar-rustdesk)"/>
+  <path d="M570 365 C540 365 545 290 515 290" class="v-l" marker-end="url(#ar-rustdesk)"/>
+  <text x="400" y="400" class="v-s v-dim" text-anchor="middle">pare-feu : aucun accès Internet</text>
+</svg></div></div>
+      <div class="card-body">
+        <div class="card-top">
+          <h3>Prise en main à distance avec RustDesk</h3>
+          <span class="status">En service</span>
+        </div>
+        <p>Serveur RustDesk auto-hébergé, client installé et configuré par GPO sur les postes, outil d'installation ponctuelle à distance.</p>
+        <span class="stack">RustDesk · Docker · GPO · PowerShell</span>
+      </div>
+    </a>
+    <a class="card card-main flip" href="projets/winploy.html">
+      <div class="card-img"><img src="img/winploy.png" alt="Interface de WinPloy" loading="lazy"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <h3>WinPloy</h3>
+          <span class="status">Version 2.0</span>
+        </div>
+        <p>Logiciel Windows pour installer une application sur un lot de postes du domaine, en parallèle, sans agent.</p>
+        <span class="stack">C# · .NET 8 · WPF · PowerShell</span>
+      </div>
+    </a>
+    <a class="card card-main" href="projets/facilock.html">
+      <div class="card-img"><img src="img/facilock-cablage.jpg" alt="Schéma de câblage de FaciLock : Raspberry Pi, Arduino, caméra, digicode, ventouse" loading="lazy"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <h3>FaciLock</h3>
+          <span class="status">Bac Pro · 2025</span>
+        </div>
+        <p>Serrure connectée à reconnaissance faciale : Raspberry Pi 5, digicode sur Arduino et application mobile pour ouvrir à distance et voir les visiteurs inconnus.</p>
+        <span class="stack">Python · Flask · OpenCV · Arduino · React Native</span>
+      </div>
+    </a>
+  </div>
+
+  <h2 class="group-title">Travaux du BTS</h2>
+  <p class="group-desc">Réalisés en cours. Chaque ligne ouvre le rapport en PDF.</p>
+  <ul class="projects">
+    <li><a class="row" href="docs/audit-ad-gpo.pdf" target="_blank" rel="noopener">
+      <span class="year">BTS 2</span>
+      <div><h3>Audit Active Directory et GPO</h3><p>Audit d'un domaine de test avec PingCastle et BloodHound : politique de mots de passe sans verrouillage, protocoles d'authentification anciens corrigés. Puis trois GPO de restriction des postes, vérifiées sur un client.</p></div>
+      <div class="side"><span class="stack">AD · GPO · PingCastle · BloodHound</span></div>
+    </a></li>
+    <li><a class="row" href="docs/durcissement-windows.pdf" target="_blank" rel="noopener">
+      <span class="year">BTS 2</span>
+      <div><h3>Mise en service sécurisée d'un poste Windows</h3><p>Procédure en trois variantes selon le modèle de tiers (T0, T1, T2), à partir d'un état initial relevé sur un banc de test : comptes, pare-feu, audit, ports exposés.</p></div>
+      <div class="side"><span class="stack">Windows Server · PowerShell</span></div>
+    </a></li>
+    <li><a class="row" href="docs/durcissement-linux.pdf" target="_blank" rel="noopener">
+      <span class="year">BTS 2</span>
+      <div><h3>Durcir une machine Linux, et le prouver</h3><p>Debian 13 durcie mesure par mesure (comptes, SSH, fail2ban, nftables, auditd, AppArmor), avec pour chacune la commande qui prouve qu'elle est appliquée. Score Lynis de départ : 66.</p></div>
+      <div class="side"><span class="stack">Debian · Bash · Lynis</span></div>
+    </a></li>
+    <li><a class="row" href="docs/audit-technique.pdf" target="_blank" rel="noopener">
+      <span class="year">BTS 2</span>
+      <div><h3>Audit technique d'un poste Linux</h3><p>Douze points de contrôle (comptes UID 0, sudo, mots de passe, ports, services), puis un script qui génère le rapport.</p></div>
+      <div class="side"><span class="stack">Fedora · Bash</span></div>
+    </a></li>
+    <li><a class="row" href="docs/analyse-incident.pdf" target="_blank" rel="noopener">
+      <span class="year">BTS 2</span>
+      <div><h3>Analyse d'un incident dans une PME</h3><p>Étude de cas : hameçonnage, macro, accès VPN puis compromission du domaine. Actifs critiques, chaîne d'attaque, mesures immédiates et préventives.</p></div>
+      <div class="side"><span class="stack">Gestion d'incident</span></div>
+    </a></li>
+  </ul>
+</div>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain </p>
+  </div>
+</footer>
+
+<script src="theme.js"></script>
+</body>
+</html>

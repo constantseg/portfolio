@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation · Constant Segrétain</title>
+<meta name="description" content="Procédures, rapports de TP et documentation technique.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="projets.html">Projets</a>
+      <a href="competences.html">Compétences</a>
+      <a href="documentation.html" aria-current="page">Documentation</a>
+      <a href="veille.html">Veille</a>
+      <a href="parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">Documentation</p>
+    <h1>Procédures et rapports</h1>
+    <p>Ce que j'ai écrit pour qu'un autre puisse refaire, vérifier ou reprendre mon travail.</p>
+  </header>
+
+  <div class="filters" role="group" aria-label="Filtrer par catégorie">
+      <button type="button" class="filter" aria-pressed="true" data-cat="all">Tout</button>
+      <button type="button" class="filter" aria-pressed="false" data-cat="procedure">Procédures</button>
+      <button type="button" class="filter" aria-pressed="false" data-cat="projet">Projets</button>
+      <button type="button" class="filter" aria-pressed="false" data-cat="tp">TP</button>
+  </div>
+
+  <ul class="projects docs">
+    <li data-cat="procedure">
+      <a class="row" href="docs/srv-docker-installation.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Installer le serveur Docker et Portainer</h3>
+          <p>Ubuntu Server, Docker depuis le dépôt officiel, Portainer CE par Docker Compose.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/gitea-portainer.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Relier Gitea et Portainer</h3>
+          <p>Dépôt du fichier Compose, jeton en lecture seule, stack depuis Git, webhook, mots de passe hors du dépôt.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/rappel-docker.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Rappel : les bases de Docker</h3>
+          <p>Images, conteneurs, volumes, Docker Compose et les commandes de dépannage, pour l'équipe.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/gitea-installation.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Installer Gitea sous Docker</h3>
+          <p>Gitea et PostgreSQL dans un fichier Compose, port SSH décalé, installation web.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/gitea-presentation.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Présentation de Gitea</h3>
+          <p>À quoi sert Git pour les configurations, et comment lire l'historique d'une sauvegarde.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/ansible-semaphore-installation.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Installer Semaphore et Ansible sous Docker</h3>
+          <p>Service dans le Compose, image avec Paramiko, clé SSH, dépôt Gitea, inventaire, tâche planifiée.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/ansible-semaphore-utilisation.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Sauvegarde des switchs : guide d'utilisation</h3>
+          <p>Où trouver les sauvegardes, ajouter ou retirer un switch, suivre et relancer la tâche.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/rustdesk-installation.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Installer le serveur RustDesk et déployer le client</h3>
+          <p>Conteneur RustDesk, clé publique, script d'installation, GPO au démarrage.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/rustdesk-console.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Utiliser la console RustDesk</h3>
+          <p>Appareils, carnets d'adresses, prise en main, transfert de fichiers, mode confidentialité.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/rustdesk-installation-distante.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Installer RustDesk à distance, ponctuellement</h3>
+          <p>L'outil PowerShell et PsExec pour installer ou retirer le client d'un poste.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="docs/wake-on-lan.pdf" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Réveiller un poste depuis le clic droit de l'AD</h3>
+          <p>Entrée Wake On LAN dans la console AD : adresse MAC lue dans le DHCP ou dans GLPI, paquet magique.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="procedure">
+      <a class="row" href="https://github.com/constantseg/WinPloy/blob/main/docs/ACTIVER-WINRM.md" target="_blank" rel="noopener">
+        <span class="year">Procédures</span>
+        <div>
+          <h3>Activer WinRM sur les postes cibles</h3>
+          <p>Procédure par GPO ou à la main : service, pare-feu, écoute HTTPS, vérification.</p>
+        </div>
+        <div class="side"><span class="stack">Lien</span></div>
+      </a>
+    </li>
+    <li data-cat="projet">
+      <a class="row" href="https://github.com/constantseg/WinPloy#readme" target="_blank" rel="noopener">
+        <span class="year">Projets</span>
+        <div>
+          <h3>WinPloy : documentation complète</h3>
+          <p>Prérequis, installation, compilation, utilisation, paquets personnalisés, contrôle d'intégrité.</p>
+        </div>
+        <div class="side"><span class="stack">Lien</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/nextcloud.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Déployer Nextcloud relié à l'Active Directory</h3>
+          <p>Comptes AD par LDAP puis LDAPS, dossiers d'équipe, HTTPS, client déployé par GPO, édition en ligne avec Collabora.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/reverse-proxy-nginx.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Mettre en place un reverse proxy Nginx</h3>
+          <p>HTTPS avec certificat interne, routage par chemin et par nom, répartition de charge vers deux serveurs Apache.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/vpn-site-a-site-ipsec.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Relier deux sites par un VPN IPsec sous pfSense</h3>
+          <p>IKEv2, phases 1 et 2, règles de pare-feu, tests ; NAT-T, BINAT et authentification par certificat.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/audit-ad-gpo.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Audit Active Directory et GPO</h3>
+          <p>PingCastle et BloodHound sur un domaine de test, corrections, trois GPO de restriction des postes.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/durcissement-windows.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Mise en service sécurisée d'un poste Windows</h3>
+          <p>Modèle de tiers T0/T1/T2, état initial relevé sur un banc de test, mesures et preuves.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/durcissement-linux.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Durcir une machine Linux, et le prouver</h3>
+          <p>Debian 13 : comptes, SSH, fail2ban, nftables, auditd, AppArmor ; chaque mesure vérifiée.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/audit-technique.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Audit technique d'un poste Linux</h3>
+          <p>Comptes, privilèges, mots de passe, ports, services, et un script qui produit le rapport.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+    <li data-cat="tp">
+      <a class="row" href="docs/analyse-incident.pdf" target="_blank" rel="noopener">
+        <span class="year">TP</span>
+        <div>
+          <h3>Analyse d'un incident dans une PME</h3>
+          <p>Hameçonnage et compromission du domaine : actifs, vulnérabilités, chaîne d'attaque, mesures.</p>
+        </div>
+        <div class="side"><span class="stack">PDF</span></div>
+      </a>
+    </li>
+  </ul>
+</div>
+<script src="docs.js"></script>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain</p>
+  </div>
+</footer>
+
+<script src="theme.js"></script>
+</body>
+</html>

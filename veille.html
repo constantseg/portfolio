@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veille · Constant Segrétain</title>
+<meta name="description" content="Veille technologique et alertes de sécurité du CERT-FR.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="projets.html">Projets</a>
+      <a href="competences.html">Compétences</a>
+      <a href="documentation.html">Documentation</a>
+      <a href="veille.html" aria-current="page">Veille</a>
+      <a href="parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <header class="page-head">
+    <p class="label">Veille technologique</p>
+    <h1 class="ph">[Ton sujet de veille]</h1>
+    <p class="ph">[Une phrase : pourquoi ce sujet, en quoi il touche le métier d'administrateur.
+      Exemples qui collent à tes projets : sécurité de l'Active Directory, fin de vie de Windows 10,
+      automatisation du réseau, failles des équipements Aruba et Cisco.]</p>
+  </header>
+
+  <section class="block">
+    <div class="block-head"><h2>Méthode</h2></div>
+    <dl class="factsheet">
+      <div><dt>Sources</dt><dd class="ph">[CERT-FR, blog de l'éditeur, etc.]</dd></div>
+      <div><dt>Outil</dt><dd class="ph">[Flux RSS, Feedly, alertes Google…]</dd></div>
+      <div><dt>Rythme</dt><dd class="ph">[chaque semaine]</dd></div>
+      <div><dt>Depuis</dt><dd class="ph">[mois année]</dd></div>
+    </dl>
+  </section>
+
+  <section class="block">
+    <div class="block-head"><h2>Ce que j'ai retenu</h2></div>
+    <ul class="entries">
+      <li>
+        <span class="when ph">[date]</span>
+        <div>
+          <h3 class="ph">[Titre de l'actualité]</h3>
+          <p class="org ph">[Source]</p>
+          <p class="ph">[Ce qui s'est passé, en deux phrases. Puis ce que ça change pour un administrateur, ou ce que tu ferais sur un parc.]</p>
+        </div>
+      </li>
+      <li>
+        <span class="when ph">[date]</span>
+        <div>
+          <h3 class="ph">[Titre de l'actualité]</h3>
+          <p class="org ph">[Source]</p>
+          <p class="ph">[Résumé et analyse]</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="block-head">
+      <h2>Dernières alertes du CERT-FR</h2>
+      <a href="https://www.cert.ssi.gouv.fr/" class="more" target="_blank" rel="noopener">cert.ssi.gouv.fr →</a>
+    </div>
+<!-- cert-fr:start -->
+    <ul class="projects feed">
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/avis/CERTFR-2026-AVI-1295/" target="_blank" rel="noopener">
+          <span class="year">13 oct. 2026</span>
+          <div><h3>Vulnérabilité dans NetApp StorageGRID</h3></div>
+          <div class="side"><span class="stack">Avis</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/avis/CERTFR-2026-AVI-1292/" target="_blank" rel="noopener">
+          <span class="year">12 oct. 2026</span>
+          <div><h3>Multiples vulnérabilités dans PostgreSQL JDBC</h3></div>
+          <div class="side"><span class="stack">Avis</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/avis/CERTFR-2026-AVI-1293/" target="_blank" rel="noopener">
+          <span class="year">12 oct. 2026</span>
+          <div><h3>Multiples vulnérabilités dans MongoDB</h3></div>
+          <div class="side"><span class="stack">Avis</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/avis/CERTFR-2026-AVI-1294/" target="_blank" rel="noopener">
+          <span class="year">12 oct. 2026</span>
+          <div><h3>Multiples vulnérabilités dans GitLab</h3></div>
+          <div class="side"><span class="stack">Avis</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/alerte/CERTFR-2026-ALE-012/" target="_blank" rel="noopener">
+          <span class="year">12 oct. 2026</span>
+          <div><h3>Incident de sécurité ciblant les contrôleurs à distance des installations de réfrigération</h3></div>
+          <div class="side"><span class="stack">Alerte</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/actualite/CERTFR-2026-ACT-043/" target="_blank" rel="noopener">
+          <span class="year">12 oct. 2026</span>
+          <div><h3>Bulletin d&#x27;actualité CERTFR-2026-ACT-043</h3></div>
+          <div class="side"><span class="stack">Actualité</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/avis/CERTFR-2026-AVI-1284/" target="_blank" rel="noopener">
+          <span class="year">9 oct. 2026</span>
+          <div><h3>Vulnérabilité dans les produits Tenable</h3></div>
+          <div class="side"><span class="stack">Avis</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/avis/CERTFR-2026-AVI-1285/" target="_blank" rel="noopener">
+          <span class="year">9 oct. 2026</span>
+          <div><h3>Vulnérabilité dans Citrix NetScaler ADC et Gateway</h3></div>
+          <div class="side"><span class="stack">Avis</span></div>
+        </a>
+      </li>
+    </ul>
+    <p class="section-note">Mis à jour automatiquement chaque jour depuis le flux RSS du CERT-FR.</p>
+<!-- cert-fr:end -->
+  </section>
+</div>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain </p>
+  </div>
+</footer>
+
+<script src="theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sauvegarde automatique des switchs · Constant Segrétain</title>
+<meta name="description" content="Chaque nuit, la configuration de 43 switchs répartis sur 3 sites est récupérée par Ansible et versionnée dans Git.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="../index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="../index.html">Accueil</a>
+      <a href="../projets.html" aria-current="page">Projets</a>
+      <a href="../competences.html">Compétences</a>
+      <a href="../documentation.html">Documentation</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <p class="crumb"><a href="../projets.html">Projets</a> / Sauvegarde automatique des switchs</p>
+  <header class="project-head">
+    <h1>Sauvegarde automatique des switchs</h1>
+    <p class="tagline">Chaque nuit, la configuration de 43 switchs répartis sur 3 sites est récupérée par Ansible et versionnée dans Git.</p>
+  </header>
+  <dl class="factsheet">
+    <div><dt>Contexte</dt><dd>Alternance, Ensemble scolaire Saint-Benoît</dd></div>
+    <div><dt>Stack</dt><dd>Ansible · Semaphore · Docker · Gitea</dd></div>
+    <div><dt>Statut</dt><dd><span class="status">En service</span></dd></div>
+    <div><dt>Périmètre</dt><dd>43 switchs Aruba et Cisco</dd></div>
+  </dl>
+  <figure class="shot diagram-shot">
+    <div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Semaphore lance Ansible chaque nuit : connexion SSH aux 43 switchs des trois sites, puis envoi des configurations dans Gitea.">
+  <defs><marker id="ar-page" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
+  <rect x="30" y="40" width="260" height="190" rx="10" class="v-node v-hl"/>
+  <text x="54" y="80" class="v-t">Semaphore</text>
+  <text x="54" y="112" class="v-s">ansible-playbook</text>
+  <text x="54" y="136" class="v-s">backup_switch.yml</text>
+  <rect x="54" y="168" width="150" height="34" rx="17" class="v-pill"/>
+  <text x="129" y="190" class="v-pill-t" text-anchor="middle">chaque nuit, 2 h</text>
+  <rect x="30" y="310" width="260" height="155" rx="10" class="v-node"/>
+  <text x="54" y="350" class="v-t">Gitea</text>
+  <text x="54" y="382" class="v-s">backups/&lt;site&gt;/</text>
+  <text x="54" y="406" class="v-s">&lt;switch&gt;.cfg</text>
+  <text x="54" y="440" class="v-s v-dim">un commit par nuit</text>
+  <path d="M120 230 V310" class="v-l" marker-end="url(#ar-page)"/>
+  <path d="M200 310 V230" class="v-l" marker-end="url(#ar-page)"/>
+  <text x="112" y="275" class="v-lb" text-anchor="end">configs</text>
+  <text x="208" y="275" class="v-lb">playbook</text>
+  <path d="M290 110 C380 110 380 97 470 97" class="v-l" marker-end="url(#ar-page)"/>
+  <path d="M290 135 C380 135 380 252 470 252" class="v-l" marker-end="url(#ar-page)"/>
+  <path d="M290 160 C380 160 380 407 470 407" class="v-l" marker-end="url(#ar-page)"/>
+  <text x="380" y="85" class="v-lb" text-anchor="middle">SSH</text>
+  <rect x="470" y="40" width="300" height="115" rx="10" class="v-node"/><text x="492" y="72" class="v-t">Site C</text><text x="748" y="72" class="v-s" text-anchor="end">19 switchs</text><rect x="492" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="195" width="300" height="115" rx="10" class="v-node"/><text x="492" y="227" class="v-t">Site U</text><text x="748" y="227" class="v-s" text-anchor="end">17 switchs</text><rect x="492" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="350" width="300" height="115" rx="10" class="v-node"/><text x="492" y="382" class="v-t">Site N</text><text x="748" y="382" class="v-s" text-anchor="end">7 switchs</text><rect x="492" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="400" width="13" height="13" rx="3" class="v-sw"/>
+</svg></div>
+    <figcaption>Semaphore lance le playbook chaque nuit. Ansible se connecte en SSH à chaque switch, lit sa configuration, et l'ensemble repart dans Gitea en un seul commit.</figcaption>
+  </figure>
+  <div class="prose">
+<h2>Le besoin</h2>
+<p>
+  Quand un switch tombe en panne ou qu'une modification casse quelque chose, il faut pouvoir retrouver sa
+  configuration, et savoir ce qui a changé. Avec des dizaines de switchs sur plusieurs sites, la sauvegarde
+  à la main n'est jamais faite au bon moment.
+</p>
+<p class="ph">[Une ou deux phrases sur la situation de départ : comment c'était fait avant ?]</p>
+
+<h2>Le fonctionnement</h2>
+<p>
+  L'inventaire range les switchs par site. Par défaut ils sont pilotés comme des Aruba ; les 7 switchs
+  Cisco sont marqués <code>ansible_network_os=ios</code>. Le playbook passe en mode <code>enable</code>,
+  lit la configuration courante, puis l'écrit dans un fichier par switch :
+</p>
+<pre><code>- name: Récupérer la configuration courante
+  ansible.netcommon.cli_command:
+    command: show running-config
+  register: config_output
+
+- name: Écrire la configuration du switch
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ config_output.stdout }}"
+    dest: "./backups/{{ nom_site }}/{{ inventory_hostname }}.cfg"</code></pre>
+<p>
+  Le nom du fichier ne contient pas de date : chaque nuit, le fichier est écrasé et c'est Git qui garde
+  l'historique. Comparer deux versions montre exactement ce qui a changé sur un switch. L'envoi vers le
+  dépôt est fait une seule fois à la fin (<code>run_once</code>), et seulement s'il y a eu un changement.
+</p>
+<figure class="inline-shot">
+  <img src="../img/gitea-historique.png" alt="Liste des révisions du dépôt backups-switchs-ansible dans Gitea : des commits « Sauvegarde auto du … »" loading="lazy">
+  <figcaption>Chaque sauvegarde est un commit dans Gitea. Cliquer dessus montre les lignes modifiées.</figcaption>
+</figure>
+
+<h2>Deux versions</h2>
+<p>
+  <strong>D'abord un serveur dédié.</strong> Une machine Ubuntu Server avec Ansible installé par pip, les
+  collections réseau (<code>ansible.netcommon</code>, <code>community.network</code>,
+  <code>cisco.ios</code>) et Paramiko pour les connexions SSH. Le playbook se lançait en ligne de commande.
+</p>
+<p>
+  <strong>Puis Semaphore, sur le <a href="docker-gitops.html">serveur Docker</a>.</strong> Semaphore donne
+  une interface web à Ansible : lancement à la main, planification, historique de chaque exécution. Il
+  tourne avec sa base PostgreSQL dans la stack gérée par Portainer. L'image officielle ne contient pas
+  Paramiko : un Dockerfile de trois lignes l'ajoute.
+</p>
+
+<h2>Les points d'attention</h2>
+<ul>
+  <li><strong>Une clé SSH dédiée</strong> (ed25519) permet à Semaphore de lire et d'écrire dans le dépôt
+    Gitea sans mot de passe. Elle est montée dans le conteneur par un volume en lecture seule.</li>
+  <li><strong>Un parc hétérogène.</strong> Aruba et Cisco ne parlent pas la même langue, certains switchs
+    ont des identifiants différents, et les modèles administrables seulement par interface web sont
+    sortis de l'inventaire.</li>
+  <li><strong>Une procédure d'installation et un guide d'utilisation</strong> pour que l'équipe puisse
+    ajouter un switch ou relancer une sauvegarde sans moi.</li>
+</ul>
+
+<h2>Ce que j'améliorerais</h2>
+<ul>
+  <li>Chiffrer les identifiants des switchs avec Ansible Vault plutôt que de les laisser dans l'inventaire.</li>
+  <li>Être prévenu par e-mail quand une sauvegarde échoue, au lieu de devoir consulter l'historique.</li>
+</ul>
+
+<h2>Ce que j'en retiens</h2>
+<p class="ph">[À écrire toi-même.]</p>
+  </div>
+  <div class="next-prev"><span></span><a href="docker-gitops.html" style="text-align:right">Suivant →<strong>Serveur Docker piloté par Git</strong></a></div>
+</div>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+  </div>
+</footer>
+
+<script src="../theme.js"></script>
+</body>
+</html>

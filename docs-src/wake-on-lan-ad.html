@@ -1,0 +1,76 @@
+<header class="doc">
+  <p class="kind">Procédure · Active Directory</p>
+  <h1>Réveiller un poste depuis la console Active Directory</h1>
+  <p class="meta">Wake-on-LAN au clic droit dans « Utilisateurs et ordinateurs Active Directory », par script PowerShell.</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Ajouter une entrée « Wake On LAN » au menu clic droit des ordinateurs dans la console ADUC,
+  pour allumer un poste à distance avant une intervention ou une mise à jour.</dd>
+  <dt>Version 1</dt><dd>L'adresse MAC est lue dans les baux du serveur DHCP. En service.</dd>
+  <dt>Version 2</dt><dd>L'adresse MAC est lue dans l'inventaire GLPI par son API REST. En cours (février 2026).</dd>
+</dl>
+
+<h2>1. Fonctionnement</h2>
+<ol>
+  <li>Le technicien fait un clic droit sur un ordinateur dans ADUC → <em>Wake On LAN</em>.</li>
+  <li>La console lance l'exécutable et lui passe, en argument, le chemin LDAP de l'objet (<code>LDAP://CN=PC-01,OU=…</code>).</li>
+  <li>Le script en extrait le nom du poste (<code>CN=…</code>), puis trouve son adresse MAC :
+    <ul>
+      <li>version 1 : résolution DNS du nom → adresse IP → bail sur le serveur DHCP → adresse MAC ;</li>
+      <li>version 2 : recherche du poste dans GLPI → ports réseau → adresse MAC.</li>
+    </ul></li>
+  <li>Il envoie le « paquet magique » (6 octets <code>FF</code> puis 16 fois l'adresse MAC) en broadcast UDP, port 9.</li>
+  <li>Tout se fait sans fenêtre, sauf en cas d'erreur. Lancé sans argument, le programme ouvre une petite fenêtre pour saisir un nom de poste.</li>
+</ol>
+<pre><code># extrait du script : récupérer le nom du poste passé par ADUC
+foreach ($arg in [Environment]::GetCommandLineArgs()) {
+    if ($arg -match "LDAP://.*CN=([^,]+)") { $TargetName = $matches[1]; break }
+}
+$IP  = (Resolve-DnsName -Name $TargetName -Type A | Select-Object -First 1).IPAddress
+$Session = New-PSSession -ComputerName $ServeurDHCP      # bail lu sur le serveur DHCP
+$MAC = Invoke-Command -Session $Session -ArgumentList $IP -ScriptBlock {
+    param($IP_Cible) (Get-DhcpServerv4Lease -IPAddress $IP_Cible).ClientId
+}</code></pre>
+
+<h2>2. Préparer l'exécutable</h2>
+<ol>
+  <li>Adapter les variables en haut du script : nom du serveur DHCP (version 1) ou URL de l'API et jetons GLPI (version 2).</li>
+  <li>Convertir le script en <code>.exe</code> (PS1 To Exe / Bat To Exe Converter, sans console, mode STA pour la fenêtre).</li>
+  <li>Le copier sur un partage caché lisible par les seuls administrateurs : <code>\\&lt;serveur-admin&gt;\WakeOnLan$\WakeOnLan.exe</code>.</li>
+</ol>
+
+<h2>3. Version 2 : préparer GLPI</h2>
+<ol>
+  <li><em>Configuration → Générale → API</em> : activer l'API REST, la connexion par identifiants et par jeton externe. Noter l'URL de l'API.</li>
+  <li>Ajouter un <em>client API</em> nommé <code>WakeOnLan</code> et copier son <strong>App-Token</strong>.</li>
+  <li>Créer un utilisateur dédié, avec la seule lecture sur les ordinateurs et le réseau (toutes entités, récursif),
+  et générer son <strong>jeton personnel</strong> (User-Token).</li>
+</ol>
+<div class="warn"><p>Les jetons GLPI sont écrits dans le script, donc dans l'exécutable. Le compte doit rester en lecture seule
+et le partage réservé aux administrateurs.</p></div>
+
+<h2>4. Ajouter l'entrée au menu clic droit (ADSI Edit)</h2>
+<p>Droits nécessaires : Administrateurs de l'entreprise. La modification concerne toute la forêt.</p>
+<ol>
+  <li>Sur un contrôleur de domaine, lancer <code>adsiedit.msc</code>.</li>
+  <li>Clic droit sur <em>Modification ADSI</em> → <em>Connexion…</em> → point de connexion <strong>Configuration</strong>.</li>
+  <li>Aller dans <code>CN=Configuration,DC=&lt;domaine&gt;</code> → <code>CN=DisplaySpecifiers</code> →
+  <code>CN=40C</code> (console en français) ou <code>CN=409</code> (anglais). Faire les deux si les deux langues sont utilisées.</li>
+  <li>Propriétés de l'objet <code>CN=computer-Display</code> → attribut <code>adminContextMenu</code> → ajouter :</li>
+</ol>
+<pre><code>2,Wake On LAN,\\&lt;serveur-admin&gt;\WakeOnLan$\WakeOnLan.exe</code></pre>
+<table>
+  <tr><th>Partie</th><th>Signification</th></tr>
+  <tr><td><code>2</code></td><td>Position dans le menu (1 est souvent déjà pris par « Gérer »).</td></tr>
+  <tr><td><code>Wake On LAN</code></td><td>Texte affiché.</td></tr>
+  <tr><td>chemin UNC</td><td>L'exécutable lancé.</td></tr>
+</table>
+
+<h2>5. Vérifier</h2>
+<ul>
+  <li>Rouvrir la console ADUC : l'entrée apparaît au clic droit sur un ordinateur.</li>
+  <li>Éteindre un poste de test (Wake-on-LAN activé dans le BIOS/UEFI et sur la carte réseau), puis le réveiller depuis la console.</li>
+</ul>
+<div class="note"><p>Le paquet magique est un broadcast : il ne traverse pas les routeurs. Pour un poste d'un autre VLAN,
+il faut envoyer depuis ce VLAN ou autoriser le broadcast dirigé sur le routeur.</p></div>

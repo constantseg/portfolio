@@ -1,0 +1,75 @@
+<header class="doc">
+  <p class="kind">Procédure · SRV-DOCKER · partie 1/2</p>
+  <h1>Installer le serveur Docker et Portainer</h1>
+  <p class="meta">Ubuntu Server, Docker depuis le dépôt officiel, Portainer CE par Docker Compose.</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Préparer le serveur qui héberge tous les conteneurs de l'établissement, administrés depuis Portainer.</dd>
+  <dt>Prérequis</dt><dd>Un serveur Gitea en service (procédure « Installer Gitea sous Docker »).</dd>
+  <dt>Suite</dt><dd>Partie 2 : « Relier Gitea et Portainer ».</dd>
+</dl>
+
+<div class="note"><p>Les adresses IP, les noms de partage et les identifiants réels ont été remplacés par des valeurs génériques
+(<code>&lt;IP_SRV_DOCKER&gt;</code>, etc.). Les captures d'écran de la version interne ne sont pas reprises.</p></div>
+
+<h2>1. Installer Ubuntu Server</h2>
+<table>
+  <tr><th>Paramètre</th><th>Valeur</th></tr>
+  <tr><td>ISO</td><td>Ubuntu Server LTS</td></tr>
+  <tr><td>Nom d'hôte</td><td><code>SRV-DOCKER</code></td></tr>
+  <tr><td>Adresse IP</td><td>fixe, <code>&lt;IP_SRV_DOCKER&gt;/24</code></td></tr>
+  <tr><td>Passerelle / DNS</td><td>passerelle du VLAN serveurs, DNS des contrôleurs de domaine</td></tr>
+  <tr><td>SSH</td><td>cocher « Install OpenSSH server » pendant l'installation</td></tr>
+</table>
+<p>Une fois le serveur démarré, mettre le système à jour :</p>
+<pre><code>sudo apt update &amp;&amp; sudo apt upgrade -y</code></pre>
+
+<h2>2. Installer Docker depuis le dépôt officiel</h2>
+<p>Le paquet <code>docker.io</code> d'Ubuntu est souvent en retard : on utilise le dépôt de Docker.</p>
+<pre><code># Clé GPG officielle de Docker
+sudo apt install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Ajout du dépôt
+sudo tee /etc/apt/sources.list.d/docker.sources &lt;&lt;EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release &amp;&amp; echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+sudo apt update
+
+# Paquets Docker
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Démarrage automatique
+sudo systemctl enable --now docker</code></pre>
+<p><strong>Vérification :</strong> <code>sudo docker run --rm hello-world</code> affiche « Hello from Docker! ».</p>
+
+<h2>3. Installer Portainer CE</h2>
+<p>Les fichiers Compose sont rangés sous <code>/opt/docker-compose/&lt;application&gt;</code>.</p>
+<pre><code>sudo mkdir -p /opt/docker-compose/portainer/portainer_data
+cd /opt/docker-compose/portainer
+sudo curl -L https://downloads.portainer.io/ce-lts/portainer-compose.yaml -o portainer-compose.yaml
+sudo nano portainer-compose.yaml</code></pre>
+<p>Dans le fichier téléchargé, supprimer la ligne qui publie le port de l'agent Edge (<code>8000:8000</code>) :
+il ne sert pas ici et c'est un port ouvert de moins.</p>
+<pre><code>sudo docker compose -f portainer-compose.yaml up -d
+sudo docker ps          # le conteneur portainer doit être « Up »</code></pre>
+
+<h2>4. Premier accès</h2>
+<ol>
+  <li>Ouvrir <code>https://&lt;IP_SRV_DOCKER&gt;:9443</code> (certificat auto-signé à accepter).</li>
+  <li>Créer le compte administrateur Portainer. Le mot de passe est rangé dans le KeePass du service.</li>
+  <li>Cliquer sur <em>Get Started</em>, puis sur l'environnement <em>local</em> (<em>Live connect</em>).</li>
+</ol>
+<div class="warn"><p>Portainer impose de créer le compte administrateur dans les minutes qui suivent le démarrage.
+Passé ce délai, il faut redémarrer le conteneur : <code>sudo docker restart portainer</code>.</p></div>
+
+<h2>Suite</h2>
+<p>Le serveur est prêt. La partie 2 décrit comment Portainer va chercher le fichier <code>docker-compose.yml</code> dans Gitea
+et redéploie les conteneurs à chaque modification.</p>

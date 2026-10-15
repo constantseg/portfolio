@@ -1,0 +1,64 @@
+<header class="doc">
+  <p class="kind">Procédure · SRV-DOCKER · partie 2/2</p>
+  <h1>Relier Gitea et Portainer</h1>
+  <p class="meta">Un seul fichier Compose versionné dans Gitea, redéployé par Portainer à chaque modification.</p>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Décrire tous les conteneurs du serveur dans un seul <code>docker-compose.yml</code>, stocké dans Gitea.
+  Portainer lit ce fichier et redéploie les conteneurs modifiés dès qu'un commit est poussé.</dd>
+  <dt>Prérequis</dt><dd>Partie 1 (Docker et Portainer installés) et un serveur Gitea en service.</dd>
+</dl>
+
+<h2>1. Côté Gitea : dépôt et jeton</h2>
+<ol>
+  <li>Créer un dépôt <strong>privé</strong> <code>containers-docker</code> et y placer le fichier <code>docker-compose.yml</code>.</li>
+  <li>Noter l'URL du dépôt : <code>http://&lt;IP_SRV_GITEA&gt;:3000/&lt;compte&gt;/containers-docker</code>.</li>
+  <li>Le dépôt étant privé, Portainer a besoin d'un jeton : <em>Paramètres du profil → Applications → Gérer les jetons d'accès</em>.
+  Créer un jeton nommé <code>Portainer</code> avec <strong>uniquement la lecture des dépôts</strong>.</li>
+  <li>Copier le jeton tout de suite : Gitea ne l'affiche qu'une fois.</li>
+</ol>
+
+<h2>2. Côté Portainer : créer la stack depuis Git</h2>
+<ol>
+  <li>Environnement <em>local</em> → <em>Stacks</em> → <em>Add stack</em>.</li>
+  <li>Nom : <code>serveur-production</code>. Build method : <em>Repository</em>.</li>
+</ol>
+<table>
+  <tr><th>Champ</th><th>Valeur</th></tr>
+  <tr><td>Repository URL</td><td>URL du dépôt <code>containers-docker</code></td></tr>
+  <tr><td>Repository reference</td><td><code>refs/heads/main</code></td></tr>
+  <tr><td>Compose path</td><td><code>docker-compose.yml</code></td></tr>
+  <tr><td>Authentication</td><td>activée : nom d'utilisateur Gitea + jeton créé à l'étape 1</td></tr>
+</table>
+
+<h2>3. Mises à jour automatiques par webhook</h2>
+<ol>
+  <li>Dans la même page, activer <em>Automatic updates</em> et choisir <em>Webhook</em>. Portainer affiche une URL unique : la copier.</li>
+  <li>Dans Gitea : dépôt → <em>Paramètres → Webhooks → Ajouter un webhook → Gitea</em>, coller l'URL, déclencheur « push ».</li>
+  <li>Revenir dans Portainer et cliquer sur <em>Deploy the stack</em>.</li>
+</ol>
+<p>À partir de là, <strong>toute modification se fait dans le fichier du dépôt</strong>, jamais à la main sur le serveur.
+Un commit sur <code>main</code> déclenche le webhook, Portainer récupère le fichier et ne recrée que les conteneurs modifiés.</p>
+<p>Pour forcer le redéploiement complet : <em>Stacks → serveur-production → Pull and redeploy</em>.</p>
+
+<h2>4. Les mots de passe hors du dépôt</h2>
+<p>Le fichier Compose est versionné : aucun mot de passe ne doit y être écrit en clair. On utilise des variables :</p>
+<pre><code>environment:
+  POSTGRES_PASSWORD: ${MDP_ANSIBLE_BDD}</code></pre>
+<p>La valeur est saisie uniquement dans Portainer : <em>Stacks → serveur-production → Environment variables → Add an environment variable</em>
+(nom de la variable dans <em>name</em>, mot de passe dans <em>value</em>).</p>
+
+<h2>5. Vérifier</h2>
+<ul>
+  <li>Modifier un détail du fichier dans Gitea (un commentaire suffit) et pousser.</li>
+  <li>Dans Gitea, onglet du webhook : la dernière livraison doit être en vert (code 200/204).</li>
+  <li>Dans Portainer, la stack affiche le nouveau commit et l'heure du redéploiement.</li>
+</ul>
+
+<h2>Bonnes pratiques retenues</h2>
+<ul>
+  <li>Un bloc par service, séparé par un commentaire (<code># === Semaphore ===</code>).</li>
+  <li>Les volumes nommés sont déclarés dans la section <code>volumes:</code> en bas du fichier.</li>
+  <li>Les images ont une version fixée (<code>semaphoreui/semaphore:v2.17.33</code>) : une mise à jour est un commit, donc réversible.</li>
+</ul>

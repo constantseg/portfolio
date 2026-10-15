@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prise en main à distance avec RustDesk · Constant Segrétain</title>
+<meta name="description" content="Un serveur RustDesk hébergé en interne, et un client installé et configuré automatiquement sur les postes.">
+<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css?v=3">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="../index.html" class="brand">Constant Segrétain</a>
+    <nav>
+      <a href="../index.html">Accueil</a>
+      <a href="../projets.html" aria-current="page">Projets</a>
+      <a href="../competences.html">Compétences</a>
+      <a href="../documentation.html">Documentation</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../parcours.html">Parcours</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <p class="crumb"><a href="../projets.html">Projets</a> / Prise en main à distance avec RustDesk</p>
+  <header class="project-head">
+    <h1>Prise en main à distance avec RustDesk</h1>
+    <p class="tagline">Un serveur RustDesk hébergé en interne, et un client installé et configuré automatiquement sur les postes.</p>
+  </header>
+  <dl class="factsheet">
+    <div><dt>Contexte</dt><dd>Alternance, Ensemble scolaire Saint-Benoît</dd></div>
+    <div><dt>Stack</dt><dd>RustDesk · Docker · GPO · PowerShell</dd></div>
+    <div><dt>Statut</dt><dd><span class="status">En service</span></dd></div>
+    <div><dt>Serveur</dt><dd>SRV-RUSTDESK</dd></div>
+  </dl>
+  <figure class="shot diagram-shot">
+    <div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Serveur RustDesk auto-hébergé sous Docker : les postes sont installés par GPO, les techniciens prennent la main depuis le client ou le navigateur.">
+  <defs><marker id="ar-page" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
+  <rect x="285" y="120" width="230" height="230" rx="12" class="v-node v-hl"/>
+  <text x="309" y="160" class="v-t">SRV-RUSTDESK</text>
+  <text x="309" y="192" class="v-s">Docker</text>
+  <text x="309" y="216" class="v-s">serveur ID + relais</text>
+  <text x="309" y="240" class="v-s">API, console web</text>
+  <rect x="309" y="276" width="182" height="34" rx="17" class="v-pill"/>
+  <text x="400" y="298" class="v-pill-t" text-anchor="middle">chiffrement imposé</text>
+  <rect x="30" y="40" width="200" height="130" rx="10" class="v-node"/>
+  <text x="52" y="78" class="v-t">GPO</text>
+  <text x="52" y="108" class="v-s">au démarrage</text>
+  <text x="52" y="132" class="v-s">install + config</text>
+  <rect x="30" y="300" width="200" height="160" rx="10" class="v-node"/>
+  <text x="52" y="338" class="v-t">Postes</text>
+  <rect x="52" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="92" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="112" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="132" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="152" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="172" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="192" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="52" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="92" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="112" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="132" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="152" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="172" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="192" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="52" y="402" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="402" width="14" height="14" rx="3" class="v-pc"/>
+  <rect x="570" y="40" width="200" height="130" rx="10" class="v-node"/>
+  <text x="592" y="78" class="v-t">Technicien</text>
+  <text x="592" y="108" class="v-s">client RustDesk</text>
+  <text x="592" y="132" class="v-s">carnet d'adresses</text>
+  <rect x="570" y="300" width="200" height="130" rx="10" class="v-node"/>
+  <text x="592" y="338" class="v-t">Navigateur</text>
+  <text x="592" y="368" class="v-s">prise en main</text>
+  <text x="592" y="392" class="v-s">sans client</text>
+  <path d="M130 170 V300" class="v-l" marker-end="url(#ar-page)"/>
+  <path d="M230 380 C260 380 255 290 285 290" class="v-l" marker-end="url(#ar-page)"/>
+  <path d="M570 105 C540 105 545 180 515 180" class="v-l" marker-end="url(#ar-page)"/>
+  <path d="M570 365 C540 365 545 290 515 290" class="v-l" marker-end="url(#ar-page)"/>
+  <text x="400" y="400" class="v-s v-dim" text-anchor="middle">pare-feu : aucun accès Internet</text>
+</svg></div>
+    <figcaption>Le client est installé par GPO au démarrage des postes. Les techniciens prennent la main depuis l'application ou depuis un navigateur. Le serveur n'a pas accès à Internet.</figcaption>
+  </figure>
+  <div class="prose">
+<h2>Le besoin</h2>
+<p>
+  Prendre la main sur un poste pour dépanner un utilisateur, sans passer par un service en ligne : les
+  connexions doivent rester sur le réseau interne.
+</p>
+<p class="ph">[Ce qui était utilisé avant, et pourquoi le changer.]</p>
+
+<h2>Le serveur</h2>
+<p>
+  Une machine Ubuntu Server fait tourner RustDesk dans un conteneur Docker : le serveur d'identifiants,
+  le relais, et une API avec console web. Une règle de pare-feu l'empêche de joindre Internet.
+</p>
+<ul>
+  <li><strong>Chiffrement imposé</strong> : seuls les clients qui connaissent la clé publique du serveur
+    peuvent l'utiliser (<code>ENCRYPTED_ONLY=1</code>).</li>
+  <li><strong>Sessions web limitées</strong> à 4 heures, et rotation des journaux pour ne pas remplir le
+    disque.</li>
+  <li><strong>Les données dans un seul dossier</strong>, monté en volume, pour simplifier la sauvegarde.</li>
+</ul>
+
+<h2>Le déploiement sur les postes</h2>
+<p>
+  Un script installe le client en silencieux depuis un partage s'il est absent, puis le configure :
+  adresse du serveur, clé publique, mot de passe permanent, mode d'accès. Il retire aussi les raccourcis
+  pour que l'utilisateur ne le lance pas par erreur. Le script est converti en exécutable et lancé par
+  une GPO au démarrage des ordinateurs.
+</p>
+<p>
+  Pour un poste isolé, j'ai écrit un petit outil graphique en PowerShell : on saisit le nom ou l'adresse
+  du poste, on clique sur Installer ou Désinstaller, et PsExec fait le reste.
+</p>
+<figure class="inline-shot narrow-shot">
+  <img src="../img/rustdesk-outil.png" alt="Fenêtre « Déploiement RustDesk » : champ Nom du PC ou adresse IP, boutons Installer, Désinstaller, Annuler" loading="lazy">
+  <figcaption>L'outil d'installation ponctuelle.</figcaption>
+</figure>
+
+<h2>Côté technicien</h2>
+<p>
+  La console web liste tous les postes reliés au serveur. On peut prendre la main depuis l'application
+  ou directement dans le navigateur, transférer des fichiers, ouvrir un terminal, et ranger les postes
+  dans des carnets d'adresses synchronisés avec le compte du technicien. Le mode confidentialité éteint
+  l'écran de l'utilisateur pendant l'intervention.
+</p>
+<figure class="inline-shot">
+  <img src="../img/rustdesk-confidentialite.jpg" alt="Écran d'un poste en mode confidentialité : « Privacy Mode, All operations are hidden »" loading="lazy">
+  <figcaption>Ce que voit l'utilisateur quand le mode confidentialité est activé.</figcaption>
+</figure>
+
+<h2>Ce que j'améliorerais</h2>
+<ul>
+  <li>Le mot de passe du client est écrit dans le script. Le convertir en exécutable le cache, mais ne
+    le protège pas vraiment : il faudrait le passer autrement.</li>
+</ul>
+
+<h2>Ce que j'en retiens</h2>
+<p class="ph">[À écrire toi-même.]</p>
+  </div>
+  <div class="next-prev"><a href="docker-gitops.html">← Précédent<strong>Serveur Docker piloté par Git</strong></a><a href="winploy.html" style="text-align:right">Suivant →<strong>WinPloy</strong></a></div>
+</div>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="foot-main">
+      <div>
+        <h2>Contact</h2>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+      </div>
+      <ul class="contact-list">
+        <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
+        <li><span>GitHub</span><a href="https://github.com/constantseg">constantseg</a></li>
+        <li><span>LinkedIn</span><a href="https://fr.linkedin.com/in/constant-segretain">constant-segretain</a></li>
+        <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+  </div>
+</footer>
+
+<script src="../theme.js"></script>
+</body>
+</html>

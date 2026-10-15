@@ -1,0 +1,39 @@
+<header class="doc">
+  <p class="kind">Présentation · équipe informatique</p>
+  <h1>Présentation de Gitea</h1>
+  <p class="meta">À quoi sert Git pour les configurations, et comment lire l'historique d'une sauvegarde.</p>
+</header>
+
+<h2>Git, en une phrase</h2>
+<p>Git conserve l'historique complet de chaque modification d'un fichier. Gitea est le serveur Git interne de l'établissement,
+avec une interface web proche de GitHub.</p>
+
+<h2>Pourquoi l'utiliser pour les configurations</h2>
+<table>
+  <tr><th>Besoin</th><th>Ce que Git apporte</th></tr>
+  <tr><td>Traçabilité</td><td>Chaque modification est datée, avec son auteur et un message.</td></tr>
+  <tr><td>Retour arrière</td><td>Une configuration d'avant-hier se retrouve en deux clics, après une erreur ou le remplacement d'un switch.</td></tr>
+  <tr><td>Diagnostic</td><td>La comparaison de deux versions montre exactement les lignes modifiées : utile quand « quelque chose a changé » sur le réseau.</td></tr>
+</table>
+
+<h2>Se repérer dans l'interface</h2>
+<h3>Page d'accueil</h3>
+<ul>
+  <li>À gauche, le fil des dernières modifications sur tous les dépôts.</li>
+  <li>À droite, la liste des dépôts auxquels on a accès.</li>
+</ul>
+<h3>Un dépôt</h3>
+<ul>
+  <li>La liste des fichiers, dans leur dernière version.</li>
+  <li>Le lien <em>Commits</em> (« N commits ») : la liste des versions. Pour la sauvegarde des switchs, un commit = une nuit où au moins une configuration a changé.</li>
+</ul>
+<h3>Un commit</h3>
+<p>Cliquer sur un commit affiche, fichier par fichier, les lignes ajoutées en vert et retirées en rouge.
+Le bouton <em>Parcourir les fichiers</em> montre le dépôt tel qu'il était à ce moment-là.</p>
+
+<h2>Les dépôts en service</h2>
+<table>
+  <tr><th>Dépôt</th><th>Contenu</th></tr>
+  <tr><td><code>backups-switchs-ansible</code></td><td>Playbook, inventaire des switchs et sauvegardes de leurs configurations.</td></tr>
+  <tr><td><code>containers-docker</code></td><td>Le fichier Compose de tous les conteneurs du serveur Docker.</td></tr>
+</table>

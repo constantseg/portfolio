@@ -1,0 +1,302 @@
+<header class="doc">
+  <p class="kind"><span class="id">CS-01</span>TP · BTS SIO 2e année · Services</p>
+  <h1>Déployer Nextcloud relié à l'Active Directory</h1>
+  <p class="meta">Debian, Apache, MariaDB : comptes AD par LDAP, dossiers d'équipe, HTTPS, client déployé par GPO, édition en ligne avec Collabora.</p>
+  <dl class="card">
+    <div><dt>Auteur</dt><dd>Constant Segrétain</dd></div>
+    <div><dt>Contexte</dt><dd>TP B2.1 · environnement de travail collaboratif</dd></div>
+    <div><dt>Date</dt><dd>septembre 2026</dd></div>
+  </dl>
+</header>
+
+<dl class="facts">
+  <dt>Objectif</dt><dd>Offrir aux utilisateurs du domaine un cloud privé : fichiers synchronisés, partages, agenda, édition de documents,
+  avec leur compte Windows habituel.</dd>
+  <dt>Épreuve E6</dt><dd>« Un environnement de travail collaboratif ».</dd>
+  <dt>Prérequis</dt><dd>Un domaine AD avec DNS et autorité de certification, un pfSense, un poste client Windows dans le domaine.</dd>
+</dl>
+
+<h2>1. Nextcloud et architecture</h2>
+<p>Nextcloud est une solution de cloud privé open source : stockage et partage de fichiers (web, client de bureau, mobile),
+calendriers, contacts, Talk (chat et visio), édition en ligne. C'est une alternative à OneDrive / Google Drive, et en partie à Microsoft 365,
+avec des données qui restent sur nos serveurs.</p>
+<table>
+  <tr><th>Brique</th><th>Choix du TP</th></tr>
+  <tr><td>Langage</td><td>PHP</td></tr>
+  <tr><td>Serveur web</td><td>Apache</td></tr>
+  <tr><td>Base de données</td><td>MariaDB</td></tr>
+  <tr><td>Stockage</td><td>disque local (déplacé ensuite hors de la racine web, § 9)</td></tr>
+  <tr><td>Annuaire</td><td>Active Directory, par LDAP puis LDAPS</td></tr>
+</table>
+<figure><img src="img/nc-schema.png" alt="Architecture cible" style="max-width:110mm">
+<figcaption>Architecture cible : lien LDAP vers le contrôleur de domaine, client déployé par GPO (schéma du TP).</figcaption></figure>
+<table>
+  <tr><th>Machine</th><th>Rôle</th><th>Nom</th></tr>
+  <tr><td>SRV-AD</td><td>Contrôleur de domaine, DNS, AD CS, partage de déploiement</td><td><code>srv-ad.sio.local</code></td></tr>
+  <tr><td>SRV-NEXTCLOUD</td><td>Debian, Apache, PHP, MariaDB, Collabora</td><td><code>nextcloud.sio.local</code></td></tr>
+  <tr><td>pfSense</td><td>Routage et filtrage entre le réseau serveurs et le réseau clients</td><td></td></tr>
+  <tr><td>Client</td><td>Windows 11 dans le domaine</td><td></td></tr>
+</table>
+
+<h2>2. Installer Nextcloud</h2>
+<h3>Paquets et sources</h3>
+<pre><code>sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install -y apache2 mariadb-server libapache2-mod-php php php-common php-curl php-gd \
+  php-intl php-mbstring php-xml php-mysql php-cli php-zip php-bcmath php-gmp php-apcu wget unzip
+
+cd /tmp
+wget https://download.nextcloud.com/server/releases/latest.zip
+sudo unzip latest.zip -d /var/www/html/
+sudo chown -R www-data:www-data /var/www/html/nextcloud</code></pre>
+
+<h3>Sécuriser MariaDB et créer la base</h3>
+<pre><code>sudo mariadb-secure-installation</code></pre>
+<table>
+  <tr><th>Question</th><th>Réponse</th></tr>
+  <tr><td>Switch to unix_socket authentication</td><td>n</td></tr>
+  <tr><td>Change the root password?</td><td>n</td></tr>
+  <tr><td>Remove anonymous users?</td><td>Y</td></tr>
+  <tr><td>Disallow root login remotely?</td><td>Y</td></tr>
+  <tr><td>Remove test database and access to it?</td><td>Y</td></tr>
+  <tr><td>Reload privilege tables now?</td><td>Y</td></tr>
+</table>
+<pre><code>sudo mariadb -u root -p
+CREATE DATABASE dbnextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+GRANT ALL ON dbnextcloud.* TO 'usrnextcloud'@'localhost' IDENTIFIED BY '&lt;mot_de_passe_bdd&gt;';
+FLUSH PRIVILEGES;
+EXIT;</code></pre>
+
+<h3>Assistant d'installation</h3>
+<p>Ouvrir <code>http://&lt;IP_serveur&gt;/nextcloud</code> et renseigner :</p>
+<table>
+  <tr><th>Champ</th><th>Valeur</th></tr>
+  <tr><td>Compte administrateur</td><td>nom et mot de passe du compte admin local de Nextcloud</td></tr>
+  <tr><td>Type de base</td><td>MySQL/MariaDB</td></tr>
+  <tr><td>Utilisateur / mot de passe</td><td><code>usrnextcloud</code> / mot de passe défini plus haut</td></tr>
+  <tr><td>Nom de la base / hôte</td><td><code>dbnextcloud</code> / <code>localhost</code></td></tr>
+</table>
+<figure><img src="img/nc-install.png" alt="Assistant d'installation de Nextcloud" style="max-height:95mm">
+<figcaption>Assistant d'installation : compte administrateur et connexion à MariaDB. Capture : documentation Nextcloud.</figcaption></figure>
+<p>Pour pouvoir utiliser le nom DNS, l'ajouter aux domaines de confiance dans <code>/var/www/html/nextcloud/config/config.php</code> :</p>
+<pre><code>'trusted_domains' =&gt; array (
+    0 =&gt; '&lt;IP_serveur&gt;',
+    1 =&gt; 'nextcloud.sio.local',
+),</code></pre>
+
+<h2>3. Relier Nextcloud à l'Active Directory</h2>
+<p>Préparer dans l'AD un compte de service sans privilège, par exemple <code>SVC_Nextcloud</code> dans <code>OU=Services</code>,
+qui sert uniquement à lire l'annuaire. Sur le serveur :</p>
+<pre><code>sudo apt install -y php-ldap
+sudo systemctl restart apache2</code></pre>
+<p>Dans Nextcloud : <em>Applications</em> → activer <strong>LDAP user and group backend</strong>,
+puis <em>Paramètres d'administration → Intégration LDAP/AD</em>.</p>
+
+<h3>Onglet Serveur</h3>
+<table>
+  <tr><th>Champ</th><th>Valeur</th></tr>
+  <tr><td>Hôte / port</td><td><code>srv-ad.sio.local</code> / <code>389</code> (bouton <em>Détecter le port</em>)</td></tr>
+  <tr><td>DN de l'utilisateur</td><td><code>CN=SVC_Nextcloud,OU=Services,DC=sio,DC=local</code></td></tr>
+  <tr><td>Mot de passe</td><td>celui du compte de service → <em>Sauvegarder les informations d'identification</em></td></tr>
+  <tr><td>DN de base</td><td><code>DC=sio,DC=local</code> (<em>Détecter le DN de base</em>, puis <em>Tester</em>)</td></tr>
+</table>
+<figure><img src="img/nc-ldap-serveur.png" alt="Onglet serveur LDAP">
+<figcaption>Onglet Serveur : hôte, compte de lecture, DN de base. « Configuration OK » doit s'afficher. Capture : documentation Nextcloud.</figcaption></figure>
+
+<h3>Configuration avancée → Paramètres du dossier</h3>
+<p>Limiter la recherche aux OU utiles :</p>
+<pre><code>DN racine de l'arbre utilisateurs : OU=Utilisateurs,DC=sio,DC=local
+DN racine de l'arbre groupes      : OU=Groupes,DC=sio,DC=local
+Association groupe-membre         : member (AD)</code></pre>
+<figure><img src="img/nc-ldap-avance.png" alt="Paramètres avancés LDAP" style="max-height:100mm">
+<figcaption>Configuration avancée : arbres des utilisateurs et des groupes, association <code>member (AD)</code>. Capture : documentation Nextcloud.</figcaption></figure>
+
+<h3>Onglets Utilisateurs, Attributs de connexion, Groupes</h3>
+<ul>
+  <li><strong>Utilisateurs</strong> : classe d'objet <code>person</code> → <em>Vérifier les paramètres et compter les utilisateurs</em>.</li>
+  <li><strong>Attributs de connexion</strong> : cocher le nom d'utilisateur LDAP (<code>sAMAccountName</code>) pour se connecter avec le login Windows.</li>
+  <li><strong>Groupes</strong> : classe d'objet <code>group</code> → <em>Vérifier les paramètres et compter les groupes</em>.</li>
+</ul>
+<figure><img src="img/nc-ldap-utilisateurs.png" alt="Onglet utilisateurs LDAP">
+<figcaption>Onglet Utilisateurs : filtre sur la classe d'objet et comptage. Dans l'AD, on choisit <code>person</code>. Capture : documentation Nextcloud.</figcaption></figure>
+<figure><img src="img/nc-ldap-groupes.png" alt="Onglet groupes LDAP">
+<figcaption>Onglet Groupes : classe <code>group</code> dans l'AD. Capture : documentation Nextcloud.</figcaption></figure>
+
+<h2>4. Groupes et dossiers d'équipe</h2>
+<ol>
+  <li>Dans l'AD, créer des groupes de service (ex. <code>GG_Compta</code>, <code>GG_Direction</code>) et y placer des utilisateurs.</li>
+  <li>Dans Nextcloud : <em>Applications</em> → activer <strong>Team folders</strong> (anciennement <em>Group folders</em>).</li>
+  <li><em>Paramètres d'administration → Dossiers d'équipe</em> : créer un dossier par service, lui affecter le groupe AD,
+  régler les droits (lecture, écriture, partage, suppression) et un quota.</li>
+  <li>Se connecter avec plusieurs comptes AD : chacun ne voit que les dossiers de ses groupes.</li>
+</ol>
+<figure><img src="img/nc-dossiers-equipe.png" alt="Dossiers d'équipe">
+<figcaption>Dossiers d'équipe : un dossier par groupe, avec droits et quota. Capture : dépôt GitHub nextcloud/groupfolders (AGPL).</figcaption></figure>
+
+<h2>5. Passer en HTTPS</h2>
+<p>Certificat demandé à l'autorité interne, avec le nom DNS du serveur en SAN :</p>
+<pre><code>sudo mkdir -p /etc/ssl/certs/nc /etc/ssl/private/nc
+cd /etc/ssl/private/nc
+sudo openssl req -new -newkey rsa:2048 -nodes -keyout nc.key -out nc.csr \
+  -subj "/CN=nextcloud.sio.local" -addext "subjectAltName=DNS:nextcloud.sio.local"</code></pre>
+<p>Faire signer <code>nc.csr</code> sur <code>https://srv-ad/certsrv</code> (modèle <strong>Serveur Web</strong>, encodage Base 64),
+copier le certificat en <code>/etc/ssl/certs/nc/nc.crt</code>, puis créer <code>/etc/apache2/sites-available/nextcloud.conf</code> :</p>
+<pre><code>&lt;VirtualHost *:80&gt;
+    ServerName nextcloud.sio.local
+    Redirect permanent / https://nextcloud.sio.local/
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName nextcloud.sio.local
+    DocumentRoot /var/www/html/nextcloud
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/nc/nc.crt
+    SSLCertificateKeyFile /etc/ssl/private/nc/nc.key
+    &lt;Directory /var/www/html/nextcloud&gt;
+        AllowOverride All
+        Require all granted
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</code></pre>
+<pre><code>sudo a2enmod ssl rewrite headers
+sudo a2ensite nextcloud.conf
+sudo apache2ctl configtest &amp;&amp; sudo systemctl restart apache2</code></pre>
+<p>Ajouter dans <code>config.php</code> : <code>'overwrite.cli.url' =&gt; 'https://nextcloud.sio.local',</code></p>
+
+<h2>6. Déployer le client Nextcloud par GPO</h2>
+<ol>
+  <li>Télécharger le client Windows au format <strong>MSI</strong> sur <code>nextcloud.com/fr/install</code>.
+  Le déploiement par GPO n'accepte que des MSI.</li>
+  <li>Le copier sur un partage lisible par les ordinateurs du domaine (lecture/exécution), ex. <code>\\srv-ad\Deploiement$\Nextcloud</code>.</li>
+  <li>Créer une GPO liée à l'OU des ordinateurs : <em>Configuration ordinateur → Stratégies → Paramètres du logiciel →
+  Installation de logiciel</em> → <em>Nouveau → Package</em>.</li>
+  <li>Choisir le MSI <strong>par son chemin réseau</strong> (UNC), pas par un chemin local, puis le mode <strong>Attribué</strong>.</li>
+  <li>Sur le client : <code>gpupdate /force</code> puis redémarrage. L'installation se fait au démarrage, avant l'ouverture de session.</li>
+</ol>
+<table>
+  <tr><th>Mode</th><th>Par ordinateur</th><th>Par utilisateur</th></tr>
+  <tr><td>Attribué</td><td>installé au démarrage</td><td>installé à l'ouverture de session</td></tr>
+  <tr><td>Publié</td><td>impossible</td><td>proposé dans <em>Programmes → Obtenir des programmes</em></td></tr>
+</table>
+<p>Première ouverture du client : adresse <code>https://nextcloud.sio.local</code>, connexion avec le compte AD dans le navigateur,
+puis choix du dossier local et du mode de synchronisation.</p>
+<figure><img src="img/nc-client-serveur.png" alt="Client : adresse du serveur" style="max-height:80mm">
+<figcaption>Client de bureau : adresse du serveur. Capture : documentation Nextcloud.</figcaption></figure>
+<figure><img src="img/nc-client-synchro.png" alt="Client : options de synchronisation" style="max-height:80mm">
+<figcaption>Client de bureau : fichiers virtuels ou synchronisation complète. Capture : documentation Nextcloud.</figcaption></figure>
+
+<h2>7. Édition en ligne avec Collabora</h2>
+<p>Pour simplifier, Collabora Online (CODE) est installé sur le serveur Nextcloud lui-même, derrière Apache sur le port 444.</p>
+<pre><code>cd /usr/share/keyrings
+sudo wget https://collaboraoffice.com/downloads/gpg/collaboraonline-release-keyring.gpg
+
+sudo tee /etc/apt/sources.list.d/collaboraonline.sources &lt;&lt;EOF
+Types: deb
+URIs: https://www.collaboraoffice.com/repos/CollaboraOnline/CODE-ubuntu2204
+Suites: ./
+Signed-By: /usr/share/keyrings/collaboraonline-release-keyring.gpg
+EOF
+
+sudo apt update &amp;&amp; sudo apt install -y coolwsd code-brand
+sudo coolconfig set ssl.enable false        # Apache chiffre à sa place
+sudo coolconfig set ssl.termination true
+sudo systemctl restart coolwsd
+sudo a2enmod proxy proxy_connect proxy_http proxy_wstunnel ssl</code></pre>
+<p><code>/etc/apache2/sites-available/collabora.conf</code> : Apache porte le certificat et relaie vers <code>coolwsd</code> (port local 9980).</p>
+<pre><code>Listen 444
+&lt;VirtualHost *:444&gt;
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/nc/nc.crt
+    SSLCertificateKeyFile /etc/ssl/private/nc/nc.key
+    AllowEncodedSlashes NoDecode
+    ProxyPreserveHost On
+
+    ProxyPass        /browser http://127.0.0.1:9980/browser retry=0
+    ProxyPassReverse /browser http://127.0.0.1:9980/browser
+    ProxyPass        /hosting/discovery http://127.0.0.1:9980/hosting/discovery retry=0
+    ProxyPassReverse /hosting/discovery http://127.0.0.1:9980/hosting/discovery
+    ProxyPass        /hosting/capabilities http://127.0.0.1:9980/hosting/capabilities retry=0
+    ProxyPassReverse /hosting/capabilities http://127.0.0.1:9980/hosting/capabilities
+    ProxyPassMatch   "/cool/(.*)/ws$" ws://127.0.0.1:9980/cool/$1/ws nocanon
+    ProxyPass        /cool/adminws ws://127.0.0.1:9980/cool/adminws
+    ProxyPass        /cool http://127.0.0.1:9980/cool
+    ProxyPassReverse /cool http://127.0.0.1:9980/cool
+&lt;/VirtualHost&gt;</code></pre>
+<pre><code>sudo a2ensite collabora.conf &amp;&amp; sudo systemctl restart apache2</code></pre>
+<ol>
+  <li>Sur le pfSense, autoriser <strong>TCP 444</strong> du réseau clients vers le serveur Nextcloud.</li>
+  <li>Dans Nextcloud : installer l'application <strong>Nextcloud Office</strong>.</li>
+  <li><em>Paramètres d'administration → Office</em> → <em>Utiliser votre propre serveur</em> → <code>https://nextcloud.sio.local:444</code>.</li>
+  <li>Créer un document texte depuis l'interface : il s'ouvre dans le navigateur.</li>
+</ol>
+
+<h2>8. Options : mobile et Talk</h2>
+<ul>
+  <li><strong>Mobile</strong> : application Nextcloud (Android / iOS), même adresse et même compte.</li>
+  <li><strong>Talk</strong> : activer l'application Talk sur le serveur ; client Talk Desktop proposé en mode <strong>publié</strong>
+  par une GPO utilisateur, installé à la demande depuis <em>Panneau de configuration → Programmes → Obtenir des programmes</em>.</li>
+</ul>
+
+<h2>9. Évolutions (demande E6)</h2>
+<h3>LDAPS : chiffrer le lien avec l'AD</h3>
+<p>En LDAP simple (TCP 389), le mot de passe du compte de service et ceux des utilisateurs circulent en clair.
+LDAPS transporte LDAP dans TLS sur <strong>TCP 636</strong>. Le contrôleur de domaine présente son certificat ;
+le serveur Nextcloud doit faire confiance à l'autorité qui l'a signé.</p>
+<ol>
+  <li>Sur <code>https://srv-ad/certsrv</code> : <em>Télécharger un certificat d'autorité de certification</em> → encodage <strong>Base 64</strong>.</li>
+  <li>Le copier sur Nextcloud avec l'extension <code>.crt</code> (obligatoire) :</li>
+</ol>
+<pre><code>sudo mkdir -p /usr/local/share/ca-certificates/sio
+sudo cp sio-ca.crt /usr/local/share/ca-certificates/sio/
+sudo update-ca-certificates
+openssl s_client -connect srv-ad.sio.local:636 -brief &lt;/dev/null   # doit afficher "Verification: OK"</code></pre>
+<ol start="3">
+  <li>Dans l'intégration LDAP : hôte <code>ldaps://srv-ad.sio.local</code>, port <code>636</code>, puis retester la configuration.</li>
+</ol>
+
+<h3>Déplacer les données hors de la racine web</h3>
+<pre><code>cd /var/www/html/nextcloud
+sudo -u www-data php occ maintenance:mode --on
+sudo mkdir -p /var/nextcloud-data
+sudo mv /var/www/html/nextcloud/data/* /var/www/html/nextcloud/data/.ocdata /var/nextcloud-data/
+# config.php : 'datadirectory' =&gt; '/var/nextcloud-data',
+sudo chown -R www-data:www-data /var/nextcloud-data
+sudo chmod 750 /var/nextcloud-data
+sudo -u www-data php occ maintenance:mode --off</code></pre>
+
+<h3>Déplacer la base sur un serveur dédié</h3>
+<ol>
+  <li>Nouveau serveur Debian avec MariaDB, même version que la source ; <code>bind-address</code> = son IP
+  dans <code>/etc/mysql/mariadb.conf.d/50-server.cnf</code> ; vérifier avec <code>ss -lntp | grep 3306</code>.</li>
+  <li>Y créer <code>dbnextcloud</code> et le compte <code>'usrnextcloud'@'&lt;IP_nextcloud&gt;'</code> avec le même mot de passe.</li>
+  <li>Nextcloud en maintenance, puis export et import :</li>
+</ol>
+<pre><code>sudo mariadb-dump --single-transaction --default-character-set=utf8mb4 -u root -p dbnextcloud &gt; /tmp/nextcloud-dump.sql
+# copie du fichier vers le serveur de BDD, puis sur celui-ci :
+sudo mariadb -u root -p dbnextcloud &lt; /tmp/nextcloud-dump.sql</code></pre>
+<ol start="4">
+  <li><code>config.php</code> : <code>'dbhost' =&gt; '&lt;IP_serveur_bdd&gt;'</code>, sortie de maintenance, puis désinstallation de MariaDB sur le serveur Nextcloud.</li>
+  <li>Si un pare-feu sépare les deux serveurs : ouvrir TCP 3306 de Nextcloud vers la base, et rien d'autre.</li>
+</ol>
+
+<h2>10. Vérifier</h2>
+<table>
+  <tr><th>Test</th><th>Résultat attendu</th></tr>
+  <tr><td>Connexion web avec un compte AD</td><td>Accès sans création de compte manuelle.</td></tr>
+  <tr><td>Deux comptes de services différents</td><td>Chacun ne voit que le dossier d'équipe de son groupe.</td></tr>
+  <tr><td><code>http://nextcloud.sio.local</code></td><td>Redirection en HTTPS, cadenas valide sur un poste du domaine.</td></tr>
+  <tr><td>Poste client après redémarrage</td><td>Client installé, dossier synchronisé dans l'explorateur.</td></tr>
+  <tr><td>Ouvrir un <code>.docx</code> dans le navigateur</td><td>Édition dans Nextcloud Office.</td></tr>
+  <tr><td><em>Paramètres d'administration → Vue d'ensemble</em></td><td>Pas d'avertissement de sécurité bloquant.</td></tr>
+</table>
+
+<h3>Dépannage</h3>
+<table>
+  <tr><th>Symptôme</th><th>Piste</th></tr>
+  <tr><td>« Accès par un domaine non approuvé »</td><td>Nom absent de <code>trusted_domains</code>.</td></tr>
+  <tr><td>LDAP : 0 utilisateur trouvé</td><td>DN de base ou arbre utilisateurs faux, mauvaise classe d'objet, mot de passe du compte de service expiré.</td></tr>
+  <tr><td>LDAPS ne se connecte pas</td><td>Pas de certificat sur le DC, CA non importée ou fichier sans extension <code>.crt</code>, port 636 filtré.</td></tr>
+  <tr><td>Le client n'est pas installé</td><td>Package ajouté par chemin local au lieu de l'UNC, droits du partage, GPO pas liée à la bonne OU (<code>gpresult /r</code>).</td></tr>
+  <tr><td>Document Office qui ne s'ouvre pas</td><td>Port 444 bloqué par le pfSense, URL Collabora erronée, <code>systemctl status coolwsd</code>.</td></tr>
+</table>
+
+<p class="sources">Captures : documentation officielle Nextcloud (docs.nextcloud.com, manuels administrateur et utilisateur) et dépôt GitHub
+nextcloud/groupfolders. Schéma : support de TP BTS SIO. Fiches techniques du cours : LDAPS, déploiement de logiciels par GPO, déplacement d'une BDD.</p>

@@ -1,0 +1,48 @@
+<header class="doc">
+  <p class="kind">Guide d'utilisation · RustDesk</p>
+  <h1>Utiliser la console RustDesk</h1>
+  <p class="meta">Appareils, carnets d'adresses, prise en main, transfert de fichiers, mode confidentialité.</p>
+</header>
+
+<p>Ce guide s'adresse aux techniciens qui prennent la main sur les postes de l'établissement.
+La console web et le client RustDesk utilisent le même compte : les carnets d'adresses sont partagés entre les deux.</p>
+
+<h2>1. La console web</h2>
+<p>Adresse : <code>http://&lt;IP_SRV_RUSTDESK&gt;:21114/</code>. Identifiants personnels fournis par l'administrateur.</p>
+<h3>Système → Appareils</h3>
+<p>Tous les postes enregistrés auprès du serveur. Pour chaque ligne :</p>
+<ul>
+  <li>le nom du poste ;</li>
+  <li><strong>prendre la main avec le client</strong> RustDesk installé sur le poste du technicien ;</li>
+  <li><strong>prendre la main dans le navigateur</strong>, sans client (dépannage depuis n'importe quel poste) ;</li>
+  <li><strong>ajouter au carnet d'adresses</strong> d'un utilisateur.</li>
+</ul>
+<h3>Utilisateur → Carnets d'adresses</h3>
+<p>Les postes que chaque technicien suit (par exemple une salle, un bâtiment). Ce carnet est le même que celui affiché dans le client RustDesk connecté au même compte.</p>
+
+<h2>2. Configurer le client RustDesk du technicien</h2>
+<ol>
+  <li>Installer RustDesk sur le poste du technicien.</li>
+  <li><em>Paramètres → Réseau → Serveur ID/Relais</em> : coller la chaîne de configuration fournie par l'administrateur, puis
+  <em>Importer la configuration</em> et <em>Valider</em>. La chaîne contient l'adresse du serveur et la clé publique.</li>
+  <li><em>Paramètres → Compte → Connexion</em> avec ses identifiants : le carnet d'adresses apparaît dans l'onglet correspondant.</li>
+</ol>
+<div class="note"><p>La chaîne de configuration n'est pas reproduite ici : elle est transmise en interne avec les identifiants.</p></div>
+
+<h2>3. Pendant une prise en main</h2>
+<table>
+  <tr><th>Fonction</th><th>Usage</th></tr>
+  <tr><td>Contrôle à distance</td><td>Écran, clavier et souris du poste.</td></tr>
+  <tr><td>Transfert de fichiers</td><td>Copier un fichier vers ou depuis le poste sans passer par un partage.</td></tr>
+  <tr><td>Terminal</td><td>Invite de commandes distante, sans afficher le bureau.</td></tr>
+  <tr><td>Discussion</td><td>Fenêtre de chat avec l'utilisateur, visible de son côté.</td></tr>
+</table>
+
+<h2>4. Mode confidentialité</h2>
+<p>Il masque l'écran du poste distant pendant l'intervention. À utiliser dès qu'on intervient sur un poste
+en l'absence de l'utilisateur ou dans une salle (vidéoprojecteur, élèves présents), ou quand on saisit un mot de passe d'administration.</p>
+<ul>
+  <li>Ponctuellement : <em>Paramètres d'affichage → Mode confidentialité</em> pendant la session.</li>
+  <li>Automatiquement à chaque session : <em>Paramètres → Affichage</em>, option d'activation à l'ouverture.</li>
+  <li>Mode 1 : l'écran distant affiche un écran noir. Mode 2 : l'écran distant est éteint.</li>
+</ul>
