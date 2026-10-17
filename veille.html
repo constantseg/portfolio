@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Veille · Constant Segrétain</title>
-<meta name="description" content="Veille technologique et alertes de sécurité du CERT-FR.">
+<meta name="description" content="Les sources que je suis pour rester à jour : CERT-FR, ANSSI, IT-Connect, et les alertes de sécurité du jour.">
 <script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,41 +32,44 @@
 <main>
 <div class="wrap">
   <header class="page-head">
-    <p class="label">Veille technologique</p>
-    <h1 class="ph">[Ton sujet de veille]</h1>
-    <p class="ph">[Une phrase : pourquoi ce sujet, en quoi il touche le métier d'administrateur.
-      Exemples qui collent à tes projets : sécurité de l'Active Directory, fin de vie de Windows 10,
-      automatisation du réseau, failles des équipements Aruba et Cisco.]</p>
+    <p class="label">Veille</p>
+    <h1>Où je me tiens au courant</h1>
+    <p>Je les suis par flux RSS. Ce que je regarde en premier : les failles qui touchent le
+      parc, et les changements sur les outils que j’utilise.</p>
   </header>
 
   <section class="block">
-    <div class="block-head"><h2>Méthode</h2></div>
-    <dl class="factsheet">
-      <div><dt>Sources</dt><dd class="ph">[CERT-FR, blog de l'éditeur, etc.]</dd></div>
-      <div><dt>Outil</dt><dd class="ph">[Flux RSS, Feedly, alertes Google…]</dd></div>
-      <div><dt>Rythme</dt><dd class="ph">[chaque semaine]</dd></div>
-      <div><dt>Depuis</dt><dd class="ph">[mois année]</dd></div>
-    </dl>
-  </section>
-
-  <section class="block">
-    <div class="block-head"><h2>Ce que j'ai retenu</h2></div>
-    <ul class="entries">
+    <div class="block-head"><h2>Mes sources</h2></div>
+    <ul class="projects">
       <li>
-        <span class="when ph">[date]</span>
-        <div>
-          <h3 class="ph">[Titre de l'actualité]</h3>
-          <p class="org ph">[Source]</p>
-          <p class="ph">[Ce qui s'est passé, en deux phrases. Puis ce que ça change pour un administrateur, ou ce que tu ferais sur un parc.]</p>
-        </div>
+        <a class="row" href="https://www.cert.ssi.gouv.fr/" target="_blank" rel="noopener">
+          <span class="year">Sécurité</span>
+          <div>
+            <h3>CERT-FR</h3>
+            <p>Avis et alertes de l’ANSSI sur les vulnérabilités. La source que je suis en premier : elle couvre Microsoft, Cisco, Juniper et les produits que j’administre.</p>
+          </div>
+          <div class="side"><span class="stack">Flux RSS</span></div>
+        </a>
       </li>
       <li>
-        <span class="when ph">[date]</span>
-        <div>
-          <h3 class="ph">[Titre de l'actualité]</h3>
-          <p class="org ph">[Source]</p>
-          <p class="ph">[Résumé et analyse]</p>
-        </div>
+        <a class="row" href="https://www.it-connect.fr/" target="_blank" rel="noopener">
+          <span class="year">Système</span>
+          <div>
+            <h3>IT-Connect</h3>
+            <p>Actualité et tutoriels en français sur Windows Server, Active Directory, Linux et le réseau. Le plus proche de mon quotidien.</p>
+          </div>
+          <div class="side"><span class="stack">Site</span></div>
+        </a>
+      </li>
+      <li>
+        <a class="row" href="https://techcommunity.microsoft.com/category/windows-server" target="_blank" rel="noopener">
+          <span class="year">Système</span>
+          <div>
+            <h3>Windows IT Pro Blog</h3>
+            <p>Les annonces de Microsoft sur les changements imposés aux contrôleurs de domaine et aux postes : durcissements, fins de support, mises à jour qui cassent quelque chose.</p>
+          </div>
+          <div class="side"><span class="stack">Flux RSS</span></div>
+        </a>
       </li>
     </ul>
   </section>

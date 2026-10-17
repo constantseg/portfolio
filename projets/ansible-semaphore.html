@@ -45,13 +45,13 @@
   <figure class="shot diagram-shot">
     <div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Semaphore lance Ansible chaque nuit : connexion SSH aux 43 switchs des trois sites, puis envoi des configurations dans Gitea.">
   <defs><marker id="ar-page" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
-  <rect x="30" y="40" width="260" height="190" rx="10" class="v-node v-hl"/>
+  <rect x="30" y="40" width="260" height="190" rx="0" class="v-node v-hl"/>
   <text x="54" y="80" class="v-t">Semaphore</text>
   <text x="54" y="112" class="v-s">ansible-playbook</text>
   <text x="54" y="136" class="v-s">backup_switch.yml</text>
   <rect x="54" y="168" width="150" height="34" rx="17" class="v-pill"/>
   <text x="129" y="190" class="v-pill-t" text-anchor="middle">chaque nuit, 2 h</text>
-  <rect x="30" y="310" width="260" height="155" rx="10" class="v-node"/>
+  <rect x="30" y="310" width="260" height="155" rx="0" class="v-node"/>
   <text x="54" y="350" class="v-t">Gitea</text>
   <text x="54" y="382" class="v-s">backups/&lt;site&gt;/</text>
   <text x="54" y="406" class="v-s">&lt;switch&gt;.cfg</text>
@@ -64,7 +64,7 @@
   <path d="M290 135 C380 135 380 252 470 252" class="v-l" marker-end="url(#ar-page)"/>
   <path d="M290 160 C380 160 380 407 470 407" class="v-l" marker-end="url(#ar-page)"/>
   <text x="380" y="85" class="v-lb" text-anchor="middle">SSH</text>
-  <rect x="470" y="40" width="300" height="115" rx="10" class="v-node"/><text x="492" y="72" class="v-t">Site C</text><text x="748" y="72" class="v-s" text-anchor="end">19 switchs</text><rect x="492" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="195" width="300" height="115" rx="10" class="v-node"/><text x="492" y="227" class="v-t">Site U</text><text x="748" y="227" class="v-s" text-anchor="end">17 switchs</text><rect x="492" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="350" width="300" height="115" rx="10" class="v-node"/><text x="492" y="382" class="v-t">Site N</text><text x="748" y="382" class="v-s" text-anchor="end">7 switchs</text><rect x="492" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="400" width="13" height="13" rx="3" class="v-sw"/>
+  <rect x="470" y="40" width="300" height="115" rx="0" class="v-node"/><text x="492" y="72" class="v-t">Site C</text><text x="748" y="72" class="v-s" text-anchor="end">19 switchs</text><rect x="492" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="90" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="109" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="195" width="300" height="115" rx="0" class="v-node"/><text x="492" y="227" class="v-t">Site U</text><text x="748" y="227" class="v-s" text-anchor="end">17 switchs</text><rect x="492" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="625" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="644" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="663" y="245" width="13" height="13" rx="3" class="v-sw"/><rect x="492" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="264" width="13" height="13" rx="3" class="v-sw"/><rect x="470" y="350" width="300" height="115" rx="0" class="v-node"/><text x="492" y="382" class="v-t">Site N</text><text x="748" y="382" class="v-s" text-anchor="end">7 switchs</text><rect x="492" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="511" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="530" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="549" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="568" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="587" y="400" width="13" height="13" rx="3" class="v-sw"/><rect x="606" y="400" width="13" height="13" rx="3" class="v-sw"/>
 </svg></div>
     <figcaption>Semaphore lance le playbook chaque nuit. Ansible se connecte en SSH à chaque switch, lit sa configuration, et l'ensemble repart dans Gitea en un seul commit.</figcaption>
   </figure>
@@ -75,7 +75,10 @@
   configuration, et savoir ce qui a changé. Avec des dizaines de switchs sur plusieurs sites, la sauvegarde
   à la main n'est jamais faite au bon moment.
 </p>
-<p class="ph">[Une ou deux phrases sur la situation de départ : comment c'était fait avant ?]</p>
+<p>
+  Avant, on exportait la configuration à la main, switch par switch, une fois par an. Entre deux
+  exports, personne ne savait ce qui avait bougé.
+</p>
 
 <h2>Le fonctionnement</h2>
 <p>
@@ -134,7 +137,11 @@
 </ul>
 
 <h2>Ce que j'en retiens</h2>
-<p class="ph">[À écrire toi-même.]</p>
+<p>
+  Le playbook n'a pas bougé en passant du serveur dédié à Semaphore. Le travail a été de refaire
+  l'inventaire et les identifiants, de monter la clé SSH dans le conteneur, et d'ajouter Paramiko à
+  l'image officielle.
+</p>
   </div>
   <div class="next-prev"><span></span><a href="docker-gitops.html" style="text-align:right">Suivant →<strong>Serveur Docker piloté par Git</strong></a></div>
 </div>

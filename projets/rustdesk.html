@@ -45,25 +45,25 @@
   <figure class="shot diagram-shot">
     <div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Serveur RustDesk auto-hébergé sous Docker : les postes sont installés par GPO, les techniciens prennent la main depuis le client ou le navigateur.">
   <defs><marker id="ar-page" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="v-head"/></marker></defs>
-  <rect x="285" y="120" width="230" height="230" rx="12" class="v-node v-hl"/>
+  <rect x="285" y="120" width="230" height="230" rx="0" class="v-node v-hl"/>
   <text x="309" y="160" class="v-t">SRV-RUSTDESK</text>
   <text x="309" y="192" class="v-s">Docker</text>
   <text x="309" y="216" class="v-s">serveur ID + relais</text>
   <text x="309" y="240" class="v-s">API, console web</text>
   <rect x="309" y="276" width="182" height="34" rx="17" class="v-pill"/>
   <text x="400" y="298" class="v-pill-t" text-anchor="middle">chiffrement imposé</text>
-  <rect x="30" y="40" width="200" height="130" rx="10" class="v-node"/>
+  <rect x="30" y="40" width="200" height="130" rx="0" class="v-node"/>
   <text x="52" y="78" class="v-t">GPO</text>
   <text x="52" y="108" class="v-s">au démarrage</text>
   <text x="52" y="132" class="v-s">install + config</text>
-  <rect x="30" y="300" width="200" height="160" rx="10" class="v-node"/>
+  <rect x="30" y="300" width="200" height="160" rx="0" class="v-node"/>
   <text x="52" y="338" class="v-t">Postes</text>
   <rect x="52" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="92" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="112" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="132" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="152" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="172" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="192" y="362" width="14" height="14" rx="3" class="v-pc"/><rect x="52" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="92" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="112" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="132" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="152" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="172" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="192" y="382" width="14" height="14" rx="3" class="v-pc"/><rect x="52" y="402" width="14" height="14" rx="3" class="v-pc"/><rect x="72" y="402" width="14" height="14" rx="3" class="v-pc"/>
-  <rect x="570" y="40" width="200" height="130" rx="10" class="v-node"/>
+  <rect x="570" y="40" width="200" height="130" rx="0" class="v-node"/>
   <text x="592" y="78" class="v-t">Technicien</text>
   <text x="592" y="108" class="v-s">client RustDesk</text>
   <text x="592" y="132" class="v-s">carnet d'adresses</text>
-  <rect x="570" y="300" width="200" height="130" rx="10" class="v-node"/>
+  <rect x="570" y="300" width="200" height="130" rx="0" class="v-node"/>
   <text x="592" y="338" class="v-t">Navigateur</text>
   <text x="592" y="368" class="v-s">prise en main</text>
   <text x="592" y="392" class="v-s">sans client</text>
@@ -81,7 +81,12 @@
   Prendre la main sur un poste pour dépanner un utilisateur, sans passer par un service en ligne : les
   connexions doivent rester sur le réseau interne.
 </p>
-<p class="ph">[Ce qui était utilisé avant, et pourquoi le changer.]</p>
+<p>
+  Avant, on passait par RDP. Deux limites : la connexion n'était possible qu'avec le compte
+  administrateur, et elle ouvrait une session à part au lieu de montrer celle de l'utilisateur. Pour un
+  problème qui se produisait dans sa session, ou sur un poste où il n'est pas administrateur, il fallait
+  se déplacer.
+</p>
 
 <h2>Le serveur</h2>
 <p>
@@ -104,13 +109,22 @@
   une GPO au démarrage des ordinateurs.
 </p>
 <p>
+  Le mot de passe du client est écrit dans ce script. Les droits NTFS du partage ne laissent lire le
+  dossier qu'aux comptes d'ordinateurs du domaine : le script s'exécute en SYSTEM au démarrage, donc il
+  y accède, mais un utilisateur connecté sur un poste ne peut pas aller voir ce qu'il y a dedans.
+</p>
+<p>
   Pour un poste isolé, j'ai écrit un petit outil graphique en PowerShell : on saisit le nom ou l'adresse
   du poste, on clique sur Installer ou Désinstaller, et PsExec fait le reste.
 </p>
 <figure class="inline-shot narrow-shot">
   <img src="../img/rustdesk-outil.png" alt="Fenêtre « Déploiement RustDesk » : champ Nom du PC ou adresse IP, boutons Installer, Désinstaller, Annuler" loading="lazy">
-  <figcaption>L'outil d'installation ponctuelle.</figcaption>
+  <figcaption>L'outil d'installation ponctuelle, dans sa première version.</figcaption>
 </figure>
+<p>
+  J'ai repris ce besoin, installer une application sur des postes du domaine à distance et sans agent,
+  pour écrire <a href="winploy.html">WinPloy</a>, qui remplace cet outil aujourd'hui.
+</p>
 
 <h2>Côté technicien</h2>
 <p>
@@ -124,14 +138,15 @@
   <figcaption>Ce que voit l'utilisateur quand le mode confidentialité est activé.</figcaption>
 </figure>
 
-<h2>Ce que j'améliorerais</h2>
-<ul>
-  <li>Le mot de passe du client est écrit dans le script. Le convertir en exécutable le cache, mais ne
-    le protège pas vraiment : il faudrait le passer autrement.</li>
-</ul>
-
 <h2>Ce que j'en retiens</h2>
-<p class="ph">[À écrire toi-même.]</p>
+<p>
+  Le script d'installation m'a demandé plus de travail que le serveur : vérifier si le client est déjà
+  là, le configurer sans fenêtre, enlever les raccourcis, et que tout ça repasse proprement à chaque
+  démarrage.
+</p>
+<p>
+  Je continue à utiliser RDP pour les serveurs. Pour dépanner quelqu'un sur sa session, c'est RustDesk.
+</p>
   </div>
   <div class="next-prev"><a href="docker-gitops.html">← Précédent<strong>Serveur Docker piloté par Git</strong></a><a href="winploy.html" style="text-align:right">Suivant →<strong>WinPloy</strong></a></div>
 </div>
