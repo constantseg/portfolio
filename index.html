@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Constant Segrétain · systèmes et réseaux</title>
 <meta name="description" content="Étudiant en BTS SIO option SISR. Postes Windows, Active Directory, réseau, automatisation.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="icon-32.png" sizes="32x32">
 <link rel="icon" href="icon-16.png" sizes="16x16">
 <link rel="icon" href="icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -41,8 +39,9 @@
     <h1>Constant Segrétain</h1>
     <p class="role">Étudiant en BTS SIO, option SISR</p>
     <p class="intro">
-      J'administre un parc Windows avec son Active Directory, des serveurs Linux, et le
-      réseau de trois sites. Quand une tâche revient trop souvent, je l'automatise.
+      Depuis 2025, je suis technicien en alternance à l'Ensemble scolaire Saint-Benoît, à Angers.
+      Je m'occupe des postes Windows et de l'Active Directory, de serveurs Linux sous Docker et
+      de 43 switchs Aruba et Cisco répartis sur trois sites.
     </p>
     <div class="actions">
       <a href="projets.html" class="btn btn-main">Voir les projets</a>
@@ -56,7 +55,7 @@
   <dl class="now">
       <div><dt>Recherche</dt><dd>Alternance</dd></div>
       <div><dt>À partir de</dt><dd>Septembre 2027</dd></div>
-      <div><dt>Secteur</dt><dd>Angers (60km aux alentours)</dd></div>
+      <div><dt>Secteur</dt><dd>Angers et 60 km autour</dd></div>
       <div><dt>Formation</dt><dd>BTS SIO SISR</dd></div>
     </dl>
   </section>
@@ -97,7 +96,7 @@
           <h3>Sauvegarde automatique des switchs</h3>
           <span class="status">En service</span>
         </div>
-        <p>Chaque nuit, Ansible récupère la configuration de 43 switchs Aruba et Cisco répartis sur 3 sites et la versionne dans Git. Piloté depuis Semaphore.</p>
+        <p>Chaque nuit, Ansible lit la configuration des 43 switchs Aruba et Cisco des trois sites et l'enregistre dans un dépôt Git. Avant, on l'exportait à la main une fois par an.</p>
         <span class="stack">Ansible · Semaphore · Docker · Gitea</span>
       </div>
     </a>
@@ -131,7 +130,7 @@
           <h3>Serveur Docker piloté par Git</h3>
           <span class="status">En service</span>
         </div>
-        <p>Tous les conteneurs décrits dans un seul fichier Compose versionné dans Gitea. À chaque modification, Portainer redéploie.</p>
+        <p>Les conteneurs du serveur sont décrits dans un fichier Compose stocké dans Gitea. À chaque commit, un webhook fait redéployer la stack par Portainer.</p>
         <span class="stack">Docker · Portainer · Gitea</span>
       </div>
     </a>
@@ -171,7 +170,7 @@
           <h3>Prise en main à distance avec RustDesk</h3>
           <span class="status">En service</span>
         </div>
-        <p>Serveur RustDesk auto-hébergé, client installé et configuré par GPO sur les postes, outil d'installation ponctuelle à distance.</p>
+        <p>Serveur RustDesk hébergé en interne, client installé par GPO au démarrage des postes. Je l'utilise pour dépanner un utilisateur dans sa session, ce que RDP ne permettait pas.</p>
         <span class="stack">RustDesk · Docker · GPO · PowerShell</span>
       </div>
     </a>
@@ -182,7 +181,7 @@
           <h3>WinPloy</h3>
           <span class="status">Version 2.0</span>
         </div>
-        <p>Logiciel Windows pour installer une application sur un lot de postes du domaine, en parallèle, sans agent.</p>
+        <p>Logiciel que j'ai écrit pour installer une application sur 1 à 200 postes du domaine en parallèle, par WinRM, sans agent sur les postes.</p>
         <span class="stack">C# · .NET 8 · WPF · PowerShell</span>
       </div>
     </a>
@@ -191,21 +190,21 @@
 
   <section class="block">
     <div class="block-head">
-      <h2>Ce que je sais faire</h2>
-      <a href="competences.html" class="more">Le détail →</a>
+      <h2>Compétences</h2>
+      <a href="competences.html" class="more">Le détail et le tableau BTS →</a>
     </div>
     <div class="skill-summary">
       <div>
         <h3>Systèmes</h3>
-        <p>Windows et Active Directory, déploiement par GPO. Ubuntu Server et Debian, Docker.</p>
+        <p>Windows, Active Directory (certification Microsoft Applied Skills), GPO, PowerShell. Ubuntu Server, Debian, Docker.</p>
       </div>
       <div>
         <h3>Réseau</h3>
-        <p>Switchs Aruba et Cisco, adressage, VLAN, DHCP, DNS. Maquettes sous Packet Tracer.</p>
+        <p>Switchs Aruba et Cisco, VLAN, adressage, DHCP, DNS. pfSense et Packet Tracer en TP.</p>
       </div>
       <div>
         <h3>Automatisation</h3>
-        <p>Ansible, Docker Compose, Git. PowerShell et Bash au quotidien, C# quand il faut une interface.</p>
+        <p>Ansible, Git, Docker Compose, Bash. C# quand il faut une interface.</p>
       </div>
     </div>
   </section>
@@ -217,7 +216,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -226,10 +225,9 @@
         <li><span>CV</span><a href="cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain </p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="theme.js"></script>
 </body>
 </html>

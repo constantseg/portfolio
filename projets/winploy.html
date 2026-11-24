@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WinPloy · Constant Segrétain</title>
 <meta name="description" content="Installer une application sur un lot de postes Windows, maintenant, depuis un poste d'administration.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="../icon-32.png" sizes="32x32">
 <link rel="icon" href="../icon-16.png" sizes="16x16">
 <link rel="icon" href="../icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css?v=3">
+<link rel="stylesheet" href="../style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="../parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -38,11 +36,11 @@
   <p class="crumb"><a href="../projets.html">Projets</a> / WinPloy</p>
   <header class="project-head">
     <h1>WinPloy</h1>
-    <p class="tagline">Installer une application sur un lot de postes Windows, maintenant, depuis un poste d'administration.</p>
+    <p class="tagline">Un logiciel Windows qui installe une application sur plusieurs postes du domaine en même temps, par WinRM, depuis un poste d'administration.</p>
   </header>
   <dl class="factsheet">
     <div><dt>Type</dt><dd>Projet personnel</dd></div>
-    <div><dt>Stack</dt><dd>C# · .NET 8 · WPF</dd></div>
+    <div><dt>Outils</dt><dd>C# · .NET 8 · WPF</dd></div>
     <div><dt>Statut</dt><dd><span class="status">Version 2.0</span></dd></div>
     <div><dt>Code</dt><dd><a href="https://github.com/constantseg/WinPloy">GitHub</a></dd></div>
   </dl>
@@ -53,9 +51,9 @@
   <div class="prose">
 <h2>Le besoin</h2>
 <p>
-  « Installer cette application sur ces douze postes, maintenant. » Intune, SCCM ou WAPT savent le faire,
-  mais les mobiliser pour ça est disproportionné, quand on les a. Je voulais un outil qu'on décompresse,
-  qu'on lance, et qui fait juste ça.
+  Le cas qui revient : installer une application sur une douzaine de postes, tout de suite. Intune, SCCM
+  ou WAPT savent le faire, mais ils sont lourds à mettre en place pour ce seul besoin, quand on les a.
+  WinPloy se décompresse et se lance depuis un poste d'administration.
 </p>
 
 <h2>Ce que fait WinPloy</h2>
@@ -67,11 +65,11 @@
   <li>Interface en français et en anglais.</li>
 </ul>
 <p>
-  Rien n'est installé sur les postes cibles et aucun serveur n'est nécessaire. Ce n'est pas un outil de
-  gestion de parc : pas d'inventaire, pas de conformité, pas de planification. C'est voulu.
+  Rien n'est installé sur les postes cibles et aucun serveur n'est nécessaire. WinPloy ne fait ni
+  inventaire ni planification : ce n'est pas un outil de gestion de parc.
 </p>
 
-<h2>Les problèmes intéressants</h2>
+<h2>Difficultés rencontrées</h2>
 <p>
   <strong>Copier un paquet sans que le poste accède au partage.</strong> Par défaut, les fichiers passent
   par la session WinRM elle-même, en blocs compressés, avec un cache par empreinte sur le poste cible :
@@ -94,7 +92,7 @@
   "install.ps1": "60303ae22b998861…"
 }</code></pre>
 
-<h2>Ce que j'en retiens</h2>
+<h2>Bilan</h2>
 <p>
   J'ai passé plus de temps sur la sécurité que sur la fonction elle-même : le dossier d'exécution aux
   droits coupés, et les empreintes SHA-256 vérifiées avant chaque déploiement.
@@ -113,7 +111,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -122,10 +120,9 @@
         <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="../theme.js"></script>
 </body>
 </html>

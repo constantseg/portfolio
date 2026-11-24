@@ -1,31 +1,5 @@
-/* Thème sombre par défaut, clair via [data-theme="light"] */
+/* Thème clair unique (le mode sombre a été retiré) */
 :root {
-  --bg: #11100e;
-  --bg-2: #1a1916;
-  --card: #211f1c;
-  --text: #f2ede3;
-  --text-2: #b3ab9c;
-  --line: #423e37;
-  --grid: rgb(242 237 227 / 0.006);
-  --grid-major: rgb(242 237 227 / 0.011);
-  --accent: #ff8247;
-  --signal: #ff8247;
-  --ok: #6cc28f;
-  --wip: #e0b25c;
-  --sans: "IBM Plex Sans", system-ui, sans-serif;
-  --cond: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, monospace;
-  /* angles francs partout : une seule valeur, pas cinq */
-  --radius: 0;
-  /* largeur de lecture : au-delà, l'œil perd la ligne suivante */
-  --measure: 42rem;
-  /* mouvement : une seule courbe, deux durées */
-  --fast: 140ms;
-  --slow: 380ms;
-  --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
-  color-scheme: dark;
-}
-:root[data-theme="light"] {
   --bg: #e9e4da;
   --bg-2: #e1dbcf;
   --card: #fffdf9;
@@ -38,6 +12,19 @@
   --signal: #a8380f;
   --ok: #2f7d4f;
   --wip: #a8740f;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --cond: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  /* coins légèrement arrondis : une valeur pour les blocs, une pour les petits éléments */
+  --radius: 7px;
+  /* petits éléments : code, pastilles, puces de schéma */
+  --radius-sm: 4px;
+  /* largeur de lecture : au-delà, l'œil perd la ligne suivante */
+  --measure: 42rem;
+  /* mouvement : une seule courbe, deux durées */
+  --fast: 140ms;
+  --slow: 380ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
   color-scheme: light;
 }
 
@@ -58,7 +45,7 @@ code {
   font: 0.88em var(--mono);
   background: var(--bg-2);
   padding: 0.1em 0.35em;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
 .wrap { max-width: 68rem; margin: 0 auto; padding-inline: 1.5rem; }
@@ -81,16 +68,6 @@ code {
 .top nav a { color: var(--text-2); text-decoration: none; padding: 0.25rem 0; }
 .top nav a:hover { color: var(--text); }
 .top nav a[aria-current="page"] { color: var(--text); box-shadow: inset 0 -1px 0 var(--text); }
-.theme-toggle {
-  font: 0.85rem var(--sans);
-  color: var(--text-2);
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 0.3rem 0.6rem;
-  cursor: pointer;
-}
-.theme-toggle:hover { color: var(--text); border-color: var(--text-2); }
 
 /* ---------- éléments communs ---------- */
 
@@ -554,19 +531,19 @@ section.block { padding: 3.5rem 0; }
 
 /* Tout ce qui se clique répond à l'enfoncement, pas au relâchement :
    sans ça, un appui au doigt ne renvoie rien. */
-.btn, .filter, .theme-toggle, .card, .projects a.row, .top nav a,
+.btn, .filter, .card, .projects a.row, .top nav a,
 .contact-list a, .next-prev a, .more, .crumb a, .skill-list .where a {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn, .filter, .theme-toggle {
+.btn, .filter {
   transition: background var(--fast) var(--ease),
               border-color var(--fast) var(--ease),
               color var(--fast) var(--ease),
               transform var(--fast) var(--ease);
 }
-.btn:active, .filter:active, .theme-toggle:active { transform: scale(0.97); }
+.btn:active, .filter:active { transform: scale(0.97); }
 
 .top nav a, .contact-list a, .next-prev a, .more,
 .crumb a, .skill-list .where a, .hero .actions .plain {
@@ -645,17 +622,16 @@ h1, h2, .card h3, .projects h3 { font-family: var(--cond); }
 
 /* pied de page : cartouche de plan */
 .foot { background: var(--bg-2); border-top: 1px solid var(--text); }
-:root[data-theme="light"] .foot { background: var(--bg-2); }
 
 @media (prefers-reduced-motion: reduce) {
   .card, .card-img .viz, .card-img img { transition: none; }
-  .btn:active, .filter:active, .theme-toggle:active, .card:active { transform: none; }
+  .btn:active, .filter:active, .card:active { transform: none; }
 }
 
 /* Contraste renforcé : des bords francs plutôt que des traits discrets (§14) */
 @media (prefers-contrast: more) {
   :root { --line: var(--text-2); }
-  .btn, .filter, .theme-toggle { border-width: 2px; }
+  .btn, .filter { border-width: 2px; }
 }
 
 /* en-tête sur largeur moyenne : logo et bouton en haut, menu dessous */
@@ -665,8 +641,7 @@ h1, h2, .card h3, .projects h3 { font-family: var(--cond); }
 }
 
 /* lisibilité : cartes détachées du plan, petits textes agrandis */
-:root { --lift: 0 1px 0 rgb(0 0 0 / 0.25), 0 10px 30px rgb(0 0 0 / 0.25); }
-:root[data-theme="light"] { --lift: 0 1px 0 rgb(22 21 18 / 0.06), 0 10px 28px rgb(22 21 18 / 0.07); }
+:root { --lift: 0 1px 0 rgb(22 21 18 / 0.06), 0 10px 28px rgb(22 21 18 / 0.07); }
 .card, .now, .table-scroll, .shot { box-shadow: var(--lift); }
 .projects { background: var(--card); border: 1px solid var(--line); padding: 0 1.25rem; box-shadow: var(--lift); }
 .projects > li:last-child { border-bottom: 0; }
@@ -687,3 +662,22 @@ h1, h2, .card h3, .projects h3 { font-family: var(--cond); }
 @media (min-width: 1800px) {
   .wrap { max-width: 104rem; padding-inline: 4rem; }
 }
+
+/* ---------- coins arrondis ---------- */
+
+.projects { border-radius: var(--radius); overflow: hidden; }
+
+/* images et schémas des cartes : arrondis seulement du côté du bord de la carte,
+   le côté qui touche le texte reste droit */
+.card-img img, .card-img .viz { border-radius: var(--radius) var(--radius) 0 0; }
+.card-main .card-img img, .card-main .card-img .viz { border-radius: var(--radius) 0 0 0; }
+.card-main.flip .card-img img, .card-main.flip .card-img .viz { border-radius: 0 var(--radius) 0 0; }
+@media (max-width: 860px) {
+  .card-main .card-img img, .card-main .card-img .viz,
+  .card-main.flip .card-img img, .card-main.flip .card-img .viz { border-radius: var(--radius) var(--radius) 0 0; }
+}
+
+/* nœuds des schémas SVG (les attributs rx="0" sont remplacés par la propriété CSS) */
+.v-node, .v-hl { rx: 8px; }
+.v-chip { rx: 6px; }
+.v-frame { rx: 10px; }

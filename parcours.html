@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Parcours · Constant Segrétain</title>
 <meta name="description" content="Formation, stages et certifications.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="icon-32.png" sizes="32x32">
 <link rel="icon" href="icon-16.png" sizes="16x16">
 <link rel="icon" href="icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="parcours.html" aria-current="page">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -49,9 +47,9 @@
           <h3>Technicien assistance informatique, en alternance</h3>
           <p class="org">Ensemble scolaire Saint-Benoît, Angers</p>
           <ul>
-            <li>Sauvegarde automatique de la configuration de 43 switchs sur 3 sites avec Ansible et Semaphore (<a href="projets/ansible-semaphore.html">voir le projet</a>)</li>
-            <li>Serveur Docker dont les conteneurs sont décrits dans Git et redéployés par Portainer (<a href="projets/docker-gitops.html">voir le projet</a>)</li>
-            <li>Serveur RustDesk auto-hébergé et client déployé par GPO (<a href="projets/rustdesk.html">voir le projet</a>)</li>
+            <li><a href="projets/ansible-semaphore.html">Sauvegarde automatique</a> de la configuration de 43 switchs sur 3 sites, avec Ansible et Semaphore</li>
+            <li><a href="projets/docker-gitops.html">Serveur Docker</a> dont les conteneurs sont décrits dans Git et redéployés par Portainer</li>
+            <li><a href="projets/rustdesk.html">Serveur RustDesk</a> hébergé en interne, client déployé par GPO</li>
           </ul>
         </div>
       </li>
@@ -85,7 +83,7 @@
           <h3>Bac pro Systèmes numériques</h3>
           <p class="org">Lycée Saint Aubin La Salle, Saint-Sylvain-d'Anjou</p>
           <ul>
-            <li>Projet de Terminale : FaciLock, serrure connectée à reconnaissance faciale (<a href="projets/facilock.html">voir le projet</a>)</li>
+            <li>Projet de Terminale : <a href="projets/facilock.html">FaciLock</a>, serrure à reconnaissance faciale</li>
           </ul>
         </div>
       </li>
@@ -112,7 +110,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -121,10 +119,9 @@
         <li><span>CV</span><a href="cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain </p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="theme.js"></script>
 </body>
 </html>

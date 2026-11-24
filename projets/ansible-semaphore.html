@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sauvegarde automatique des switchs · Constant Segrétain</title>
 <meta name="description" content="Chaque nuit, la configuration de 43 switchs répartis sur 3 sites est récupérée par Ansible et versionnée dans Git.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="../icon-32.png" sizes="32x32">
 <link rel="icon" href="../icon-16.png" sizes="16x16">
 <link rel="icon" href="../icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css?v=3">
+<link rel="stylesheet" href="../style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="../parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -42,7 +40,7 @@
   </header>
   <dl class="factsheet">
     <div><dt>Contexte</dt><dd>Alternance, Ensemble scolaire Saint-Benoît</dd></div>
-    <div><dt>Stack</dt><dd>Ansible · Semaphore · Docker · Gitea</dd></div>
+    <div><dt>Outils</dt><dd>Ansible · Semaphore · Docker · Gitea</dd></div>
     <div><dt>Statut</dt><dd><span class="status">En service</span></dd></div>
     <div><dt>Périmètre</dt><dd>43 switchs Aruba et Cisco</dd></div>
   </dl>
@@ -123,7 +121,7 @@
   Paramiko : un Dockerfile de trois lignes l'ajoute.
 </p>
 
-<h2>Les points d'attention</h2>
+<h2>Points d'attention</h2>
 <ul>
   <li><strong>Une clé SSH dédiée</strong> (ed25519) permet à Semaphore de lire et d'écrire dans le dépôt
     Gitea sans mot de passe. Elle est montée dans le conteneur par un volume en lecture seule.</li>
@@ -134,13 +132,13 @@
     ajouter un switch ou relancer une sauvegarde sans moi.</li>
 </ul>
 
-<h2>Ce que j'améliorerais</h2>
+<h2>À améliorer</h2>
 <ul>
   <li>Chiffrer les identifiants des switchs avec Ansible Vault plutôt que de les laisser dans l'inventaire.</li>
   <li>Être prévenu par e-mail quand une sauvegarde échoue, au lieu de devoir consulter l'historique.</li>
 </ul>
 
-<h2>Ce que j'en retiens</h2>
+<h2>Bilan</h2>
 <p>
   Le playbook n'a pas bougé en passant du serveur dédié à Semaphore. Le travail a été de refaire
   l'inventaire et les identifiants, de monter la clé SSH dans le conteneur, et d'ajouter Paramiko à
@@ -156,7 +154,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -165,10 +163,9 @@
         <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="../theme.js"></script>
 </body>
 </html>

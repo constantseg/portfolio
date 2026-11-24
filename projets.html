@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projets · Constant Segrétain</title>
 <meta name="description" content="Projets personnels et travaux de BTS SIO SISR.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="icon-32.png" sizes="32x32">
 <link rel="icon" href="icon-16.png" sizes="16x16">
 <link rel="icon" href="icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -37,12 +35,12 @@
 <div class="wrap">
   <header class="page-head">
     <p class="label">Projets</p>
-    <h1>Ce que j'ai construit</h1>
-    <p>Des services en production, un outil que j'ai écrit, et les travaux pratiques du BTS qui m'ont le plus appris.</p>
+    <h1>Réalisations et travaux du BTS</h1>
+    <p>Trois services que j'ai mis en place pendant mon alternance à Saint-Benoît, un logiciel que j'ai écrit et mon projet de Bac pro. Les travaux pratiques du BTS sont en bas de page.</p>
   </header>
 
   <h2 class="group-title">Réalisations</h2>
-  <p class="group-desc">Chaque projet a sa page : contexte, fonctionnement, difficultés.</p>
+  <p class="group-desc">Chaque projet a sa page : besoin, fonctionnement, difficultés.</p>
   <div class="showcase">
     <a class="card card-main" href="projets/ansible-semaphore.html">
       <div class="card-img"><div class="viz"><svg viewBox="0 0 800 500" role="img" aria-label="Semaphore lance Ansible chaque nuit : connexion SSH aux 43 switchs des trois sites, puis envoi des configurations dans Gitea.">
@@ -73,7 +71,7 @@
           <h3>Sauvegarde automatique des switchs</h3>
           <span class="status">En service</span>
         </div>
-        <p>Chaque nuit, Ansible récupère la configuration de 43 switchs Aruba et Cisco répartis sur 3 sites et la versionne dans Git. Piloté depuis Semaphore.</p>
+        <p>Chaque nuit, Semaphore lance un playbook Ansible qui lit la configuration des 43 switchs Aruba et Cisco des trois sites et l'enregistre dans Gitea. Git garde l'historique : on voit ce qui a changé sur un switch d'une nuit à l'autre.</p>
         <span class="stack">Ansible · Semaphore · Docker · Gitea</span>
       </div>
     </a>
@@ -107,7 +105,7 @@
           <h3>Serveur Docker piloté par Git</h3>
           <span class="status">En service</span>
         </div>
-        <p>Tous les conteneurs décrits dans un seul fichier Compose versionné dans Gitea. À chaque modification, Portainer redéploie.</p>
+        <p>Tous les conteneurs du serveur sont décrits dans un seul fichier Compose, stocké dans Gitea. À chaque commit, un webhook prévient Portainer, qui redéploie. Les mots de passe restent hors du dépôt.</p>
         <span class="stack">Docker · Portainer · Gitea</span>
       </div>
     </a>
@@ -147,7 +145,7 @@
           <h3>Prise en main à distance avec RustDesk</h3>
           <span class="status">En service</span>
         </div>
-        <p>Serveur RustDesk auto-hébergé, client installé et configuré par GPO sur les postes, outil d'installation ponctuelle à distance.</p>
+        <p>Serveur RustDesk hébergé en interne, sans accès à Internet. Le client est installé et configuré par GPO au démarrage des postes ; un petit outil PowerShell l'installe à distance sur un poste isolé.</p>
         <span class="stack">RustDesk · Docker · GPO · PowerShell</span>
       </div>
     </a>
@@ -158,7 +156,7 @@
           <h3>WinPloy</h3>
           <span class="status">Version 2.0</span>
         </div>
-        <p>Logiciel Windows pour installer une application sur un lot de postes du domaine, en parallèle, sans agent.</p>
+        <p>Logiciel Windows pour installer une application sur un lot de postes du domaine, en parallèle, par WinRM. Rien à installer sur les postes, aucun serveur. Les paquets sont vérifiés par empreinte SHA-256 avant chaque déploiement.</p>
         <span class="stack">C# · .NET 8 · WPF · PowerShell</span>
       </div>
     </a>
@@ -169,14 +167,14 @@
           <h3>FaciLock</h3>
           <span class="status">Bac Pro · 2025</span>
         </div>
-        <p>Serrure connectée à reconnaissance faciale : Raspberry Pi 5, digicode sur Arduino et application mobile pour ouvrir à distance et voir les visiteurs inconnus.</p>
+        <p>Serrure à reconnaissance faciale : Raspberry Pi 5 pour la caméra et le verrou, Arduino pour le digicode, application mobile pour ouvrir à distance et voir les visiteurs inconnus. J'ai écrit le serveur, le programme de l'Arduino et une partie de l'application.</p>
         <span class="stack">Python · Flask · OpenCV · Arduino · React Native</span>
       </div>
     </a>
   </div>
 
   <h2 class="group-title">Travaux du BTS</h2>
-  <p class="group-desc">Réalisés en cours. Chaque ligne ouvre le rapport en PDF.</p>
+  <p class="group-desc">Faits en cours. Chaque ligne ouvre le rapport en PDF.</p>
   <ul class="projects">
     <li><a class="row" href="docs/audit-ad-gpo.pdf" target="_blank" rel="noopener">
       <span class="year">BTS 2</span>
@@ -212,7 +210,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -221,10 +219,9 @@
         <li><span>CV</span><a href="cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain </p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="theme.js"></script>
 </body>
 </html>

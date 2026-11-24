@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FaciLock · Constant Segrétain</title>
 <meta name="description" content="Serrure connectée à reconnaissance faciale : Raspberry Pi 5, Arduino et application mobile. Projet de Terminale Bac Pro.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="../icon-32.png" sizes="32x32">
 <link rel="icon" href="../icon-16.png" sizes="16x16">
 <link rel="icon" href="../icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css?v=3">
+<link rel="stylesheet" href="../style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="../parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -38,11 +36,11 @@
   <p class="crumb"><a href="../projets.html">Projets</a> / FaciLock</p>
   <header class="project-head">
     <h1>FaciLock</h1>
-    <p class="tagline">Une serrure qui s'ouvre au visage, au digicode ou depuis le téléphone.</p>
+    <p class="tagline">Une serrure qui s'ouvre par reconnaissance faciale, par digicode ou depuis une application mobile.</p>
   </header>
   <dl class="factsheet">
     <div><dt>Type</dt><dd>Projet de Terminale, Bac Pro Systèmes numériques, à trois</dd></div>
-    <div><dt>Stack</dt><dd>Python · Flask · OpenCV · Arduino · React Native</dd></div>
+    <div><dt>Outils</dt><dd>Python · Flask · OpenCV · Arduino · React Native</dd></div>
     <div><dt>Statut</dt><dd><span class="status">Juin 2025</span></dd></div>
     <div><dt>Code</dt><dd><a href="https://github.com/constantseg/FaciLock">GitHub</a></dd></div>
   </dl>
@@ -72,7 +70,7 @@
   <figcaption>L'application : ouverture à distance, historique des visiteurs inconnus, personnes autorisées.</figcaption>
 </figure>
 
-<h2>Les problèmes intéressants</h2>
+<h2>Difficultés rencontrées</h2>
 <p>
   <strong>Faire parler le Pi et l'Arduino.</strong> Le Raspberry Pi garde toute la logique ; l'Arduino
   n'est qu'un périphérique. Ils échangent des commandes d'un caractère sur la liaison série : dans un sens
@@ -93,14 +91,14 @@
 <pre><code>ffmpeg -f lavfi -i anullsrc -i visiteur.mp4 -shortest \
   -c:v libx264 -c:a aac -movflags +faststart sortie.mp4</code></pre>
 
-<h2>Ce que j'en retiens</h2>
+<h2>Bilan</h2>
 <p>
   Les trois choses qui m'ont pris du temps étaient toutes des problèmes de liaison : le protocole
   série entre le Pi et l'Arduino, les évènements envoyés au téléphone, et le format vidéo que
   l'application acceptait. Le code de chaque côté marchait avant ça.
 </p>
 <p>
-  C'est le seul projet de cette liste avec du matériel, et le seul fait en équipe.
+  C'est mon seul projet avec du matériel, et le seul fait en équipe.
 </p>
   </div>
   <div class="next-prev"><a href="winploy.html">← Précédent<strong>WinPloy</strong></a><span></span></div>
@@ -112,7 +110,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -121,10 +119,9 @@
         <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="../theme.js"></script>
 </body>
 </html>

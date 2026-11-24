@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Serveur Docker piloté par Git · Constant Segrétain</title>
 <meta name="description" content="Les conteneurs du serveur sont décrits dans un seul fichier versionné dans Gitea. On modifie le fichier, Portainer redéploie.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="../icon-32.png" sizes="32x32">
 <link rel="icon" href="../icon-16.png" sizes="16x16">
 <link rel="icon" href="../icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css?v=3">
+<link rel="stylesheet" href="../style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="../parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -42,7 +40,7 @@
   </header>
   <dl class="factsheet">
     <div><dt>Contexte</dt><dd>Alternance, Ensemble scolaire Saint-Benoît</dd></div>
-    <div><dt>Stack</dt><dd>Docker · Portainer · Gitea · PostgreSQL</dd></div>
+    <div><dt>Outils</dt><dd>Docker · Portainer · Gitea · PostgreSQL</dd></div>
     <div><dt>Statut</dt><dd><span class="status">En service</span></dd></div>
     <div><dt>Serveurs</dt><dd>SRV-DOCKER, SRV-GITEA</dd></div>
   </dl>
@@ -85,7 +83,7 @@
   installé dans chacune.
 </p>
 
-<h2>Gitea, le dépôt de référence</h2>
+<h2>Gitea, le dépôt</h2>
 <p>
   Gitea est une forge Git auto-hébergée, l'équivalent d'un GitHub interne. Il tourne sous Docker avec sa
   base PostgreSQL, sur son propre serveur. Son port SSH est décalé sur 222 pour ne pas entrer en conflit
@@ -93,7 +91,7 @@
   et héberger le fichier Compose du serveur Docker.
 </p>
 
-<h2>Portainer, qui applique</h2>
+<h2>Portainer, qui déploie</h2>
 <p>
   Le serveur Docker est une machine Ubuntu Server avec Docker installé depuis le dépôt officiel, et
   Portainer pour l'administrer. Dans Portainer, la stack <code>serveur-production</code> n'est pas écrite
@@ -108,7 +106,7 @@
     une mise à jour, c'est changer un numéro dans le fichier, et elle reste dans l'historique.</li>
 </ul>
 
-<h2>Les points d'attention</h2>
+<h2>Points d'attention</h2>
 <ul>
   <li><strong>Aucun mot de passe dans le dépôt.</strong> Le fichier contient
     <code>${MDP_ANSIBLE_BDD}</code> ; la valeur est déclarée dans les variables d'environnement de la
@@ -119,7 +117,7 @@
     Portainer, et un rappel des bases de Docker (images, conteneurs, volumes, commandes utiles).</li>
 </ul>
 
-<h2>Ce que j'améliorerais</h2>
+<h2>À améliorer</h2>
 <ul>
   <li><strong>Sauvegarder les volumes.</strong> Le fichier Compose est dans Git, je peux donc
     reconstruire la stack quand je veux. Les données qui sont dedans, non.</li>
@@ -127,13 +125,10 @@
     tout s'arrête.</li>
 </ul>
 
-<h2>Ce que j'en retiens</h2>
+<h2>Bilan</h2>
 <p>
-  Tous les services sont décrits dans un seul fichier, je n'ai plus à me souvenir de quelle machine
-  virtuelle héberge quoi.
-</p>
-<p>
-  Ils sont aussi tous sur le même serveur. S'il s'arrête, ils s'arrêtent tous.
+  Tous les services sont décrits dans un seul fichier : je n'ai plus à chercher quelle machine
+  virtuelle héberge quoi. En contrepartie, ils dépendent tous du même serveur.
 </p>
   </div>
   <div class="next-prev"><a href="ansible-semaphore.html">← Précédent<strong>Sauvegarde automatique des switchs</strong></a><a href="rustdesk.html" style="text-align:right">Suivant →<strong>Prise en main à distance avec RustDesk</strong></a></div>
@@ -145,7 +140,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -154,10 +149,9 @@
         <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="../theme.js"></script>
 </body>
 </html>

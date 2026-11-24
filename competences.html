@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Compétences · Constant Segrétain</title>
 <meta name="description" content="Compétences en systèmes, réseau et automatisation, avec l'endroit où chacune a été mise en pratique, et tableau de synthèse BTS SIO SISR.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="icon-32.png" sizes="32x32">
 <link rel="icon" href="icon-16.png" sizes="16x16">
 <link rel="icon" href="icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -37,8 +35,8 @@
 <div class="wrap">
   <header class="page-head">
     <p class="label">Compétences</p>
-    <h1>Ce que je sais faire, et où je l'ai fait</h1>
-    <p>Pas de barres de niveau : pour chaque compétence, le projet ou le TP où je l'ai utilisée.
+    <h1>Où j'ai utilisé chaque compétence</h1>
+    <p>Pour chaque compétence, le projet, la procédure ou le TP où je l'ai utilisée.
       Le tableau de synthèse du BTS est <a href="#synthese">en bas de page</a>.</p>
   </header>
   <section class="domain">
@@ -75,8 +73,9 @@
     <ul class="skill-list">
           <li><span>Switchs Aruba et Cisco</span><span class="where"><a href="projets/ansible-semaphore.html">sauvegarde des switchs</a> (43 switchs, 3 sites)</span></li>
           <li><span>Ports, pare-feu</span><span class="where">ports du serveur <a href="projets/rustdesk.html">RustDesk</a>, port SSH de Gitea décalé</span></li>
-          <li><span>TCP/IP, adressage, VLAN</span><span class="where">TP</span></li>
-          <li><span>Cisco Packet Tracer</span><span class="where">initiation au réseau</span></li>
+          <li><span>VPN IPsec, pfSense</span><span class="where">TP <a href="docs/vpn-site-a-site-ipsec.pdf">VPN site à site</a> (IKEv2, NAT-T, certificats)</span></li>
+          <li><span>Reverse proxy</span><span class="where">TP <a href="docs/reverse-proxy-nginx.pdf">Nginx</a> : HTTPS, routage par nom, répartition de charge</span></li>
+          <li><span>TCP/IP, adressage, VLAN</span><span class="where">TP, maquettes sous Cisco Packet Tracer</span></li>
     </ul>
   </section>
   <section class="domain">
@@ -106,7 +105,7 @@
   <section class="domain">
     <div>
       <h2>Développement</h2>
-      <p class="domain-desc">Quand il faut un outil.</p>
+      <p class="domain-desc">Pour mes outils d'administration et mon projet de Bac pro.</p>
     </div>
     <ul class="skill-list">
           <li><span>C#, .NET 8, WPF</span><span class="where"><a href="projets/winploy.html">WinPloy</a></span></li>
@@ -156,7 +155,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -169,6 +168,5 @@
   </div>
 </footer>
 
-<script src="theme.js"></script>
 </body>
 </html>

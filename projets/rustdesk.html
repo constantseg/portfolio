@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prise en main à distance avec RustDesk · Constant Segrétain</title>
 <meta name="description" content="Un serveur RustDesk hébergé en interne, et un client installé et configuré automatiquement sur les postes.">
-<script>(function(){var t;try{t=localStorage.getItem("cs-theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
 <link rel="icon" href="../icon-32.png" sizes="32x32">
 <link rel="icon" href="../icon-16.png" sizes="16x16">
 <link rel="icon" href="../icon-48.png" sizes="48x48">
@@ -13,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css?v=3">
+<link rel="stylesheet" href="../style.css?v=6">
 </head>
 <body>
 
@@ -29,7 +28,6 @@
       <a href="../parcours.html">Parcours</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" aria-label="Changer de thème">clair</button>
   </div>
 </header>
 
@@ -42,7 +40,7 @@
   </header>
   <dl class="factsheet">
     <div><dt>Contexte</dt><dd>Alternance, Ensemble scolaire Saint-Benoît</dd></div>
-    <div><dt>Stack</dt><dd>RustDesk · Docker · GPO · PowerShell</dd></div>
+    <div><dt>Outils</dt><dd>RustDesk · Docker · GPO · PowerShell</dd></div>
     <div><dt>Statut</dt><dd><span class="status">En service</span></dd></div>
     <div><dt>Serveur</dt><dd>SRV-RUSTDESK</dd></div>
   </dl>
@@ -142,14 +140,14 @@
   <figcaption>Ce que voit l'utilisateur quand le mode confidentialité est activé.</figcaption>
 </figure>
 
-<h2>Ce que j'en retiens</h2>
+<h2>Bilan</h2>
 <p>
   Le script d'installation m'a demandé plus de travail que le serveur : vérifier si le client est déjà
   là, le configurer sans fenêtre, enlever les raccourcis, et que tout ça repasse proprement à chaque
   démarrage.
 </p>
 <p>
-  Je continue à utiliser RDP pour les serveurs. Pour dépanner quelqu'un sur sa session, c'est RustDesk.
+  J'utilise toujours RDP pour les serveurs, et RustDesk pour dépanner un utilisateur dans sa session.
 </p>
   </div>
   <div class="next-prev"><a href="docker-gitops.html">← Précédent<strong>Serveur Docker piloté par Git</strong></a><a href="winploy.html" style="text-align:right">Suivant →<strong>WinPloy</strong></a></div>
@@ -161,7 +159,7 @@
     <div class="foot-main">
       <div>
         <h2>Contact</h2>
-        <p>Je cherche une alternance en administration systèmes et réseaux à partir de Septembre 2027. Un e-mail suffit, je réponds vite.</p>
+        <p>Je cherche une alternance en administration systèmes et réseaux à partir de septembre 2027, à Angers ou dans un rayon de 60 km.</p>
       </div>
       <ul class="contact-list">
         <li><span>E-mail</span><a href="mailto:constantsegretain@gmail.com">constantsegretain@gmail.com</a></li>
@@ -170,10 +168,9 @@
         <li><span>CV</span><a href="../cv.pdf">cv.pdf</a></li>
       </ul>
     </div>
-    <p class="legal">© 2026 Constant Segrétain · site fait main, sans framework ni traceur</p>
+    <p class="legal">© 2026 Constant Segrétain</p>
   </div>
 </footer>
 
-<script src="../theme.js"></script>
 </body>
 </html>
